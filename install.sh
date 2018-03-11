@@ -34,6 +34,12 @@ npm install --global yarn
 # This is a default directory for macOS user accounts but doesn't comes pre-installed
 mkdir $HOME/Sites
 
+# Copy Atom config files to .atom directory
+for file in $HOME/dotfiles/atom
+do
+  cp $file $HOME/.atom
+done
+
 # Symlink the Mackup config file to the home directory
 ln -s ./.mackup.cfg $HOME/.mackup.cfg
 

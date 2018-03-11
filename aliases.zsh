@@ -1,24 +1,43 @@
-# Shortcuts
-alias copyssh="pbcopy < $HOME/.ssh/id_rsa.pub"
-alias reloadcli="source $HOME/.zshrc"
-alias reloaddns="dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
+# List Directory Using Updated CoreUtils
 alias ll="$(brew --prefix coreutils)/libexec/gnubin/ls -ahlF --color --group-directories-first"
-alias weather="curl -4 http://wttr.in"
-alias phpstorm='open -a /Applications/PhpStorm.app "`pwd`"'
-alias shrug="echo '¯\_(ツ)_/¯' | pbcopy"
+
+# Prompt on Remove, Move and Copy
+alias rm="rm -iv"
+alias mv="mv -iv"
+alias cp="cp -iv"
+
+# List Hidden Files
+alias lsa="ls -la"
+
+# General QoL
+alias ..="cd .."
+
+# List Directory on Clear
+alias clear="clear && ls"
+
+# Reload Sources
+alias reload="source $HOME/.zshrc"
 
 # Directories
 alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"
 alias sites="cd $HOME/Sites"
 
-# Laravel
-alias a="php artisan"
+# Git Commands
+alias gs="git status"
+alias gl="git log"
+alias ga="git add"
+alias gaa="git add -A"
+alias gc="git commit -m"
+alias gra="git remote add"
+alias gco="git checkout"
+alias gpush="git push"
+alias gpull="git pull"
+alias nah="git reset --hard && git clean -df"
 
-# Vagrant
-alias v="vagrant global-status"
-alias vup="vagrant up"
-alias vhalt="vagrant halt"
+# Vagrant Commands
 alias vssh="vagrant ssh"
-alias vreload="vagrant reload"
-alias vrebuild="vagrant destroy --force && vagrant up"
+alias vstat="vagrant status"
+alias vhalt="vagrant halt"
+alias vup="vagrant up"
+alias vrel="vagrant reload"
