@@ -2,6 +2,13 @@
 
 echo "Setting up your Mac..."
 
+# Ask for the administrator password upfront
+echo "What is your sudo password?"
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
 # Check for Homebrew and install if we don't have it
 if test ! $(which brew); then
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -35,9 +42,9 @@ npm install --global yarn
 mkdir $HOME/Sites
 
 # Copy Atom config files to .atom directory
-for file in $HOME/dotfiles/atom
+for file in $HOME/.dotfiles/atom
 do
-  cp $file $HOME/.atom
+  cp -R $file $HOME/.atom
 done
 
 # Symlink the Mackup config file to the home directory
