@@ -443,6 +443,3 @@ for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
     "Terminal" "Tweetbot" "iCal"; do
     killall "${app}" &> /dev/null
 done
-
-# Reset Dock cache since it usually gets corrupted here
-sudo rm ~/Library/Preferences/com.apple.dock.plist && sudo rm ~/Library/Preferences/com.apple.dock.extra.plist
