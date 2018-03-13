@@ -4,6 +4,13 @@ export DOTFILES=$HOME/.dotfiles
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
+# You may need to manually set your language environment
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# Would you like to use another custom folder than $ZSH/custom?
+ZSH_CUSTOM=$DOTFILES
+
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
@@ -61,18 +68,11 @@ ZSH_THEME="taybalt-custom"
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 #HIST_STAMPS="dd/mm/yyyy"
 
-# Would you like to use another custom folder than $ZSH/custom?
-ZSH_CUSTOM=$DOTFILES
-
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(brew composer git git-extras github httpie laravel5 npm osx vagrant z)
-
-# You may need to manually set your language environment
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
 
 # Activate Oh-My-Zsh
 source $ZSH/oh-my-zsh.sh

@@ -1,0 +1,2 @@
+# Load the real zsh config file
+source ~/.dotfiles/.zshrc
