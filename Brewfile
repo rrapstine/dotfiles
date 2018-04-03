@@ -42,6 +42,7 @@ brew 'mariadb'
 cask 'alfred'
 cask 'android-studio'
 cask 'atom'
+cask 'calibre'
 cask 'gitkraken'
 cask 'google-backup-and-sync'
 cask 'google-chrome'
@@ -73,7 +74,9 @@ cask 'font-source-sans-pro'
 cask 'font-source-serif-pro'
 
 # Install Mac App Store apps
-# mas 'Sip', id: 507257563
-# mas 'Sketch', id: 402476602
-# mas 'Spark', id: 1176895641
-# mas 'Unsplash Wallpapers', id: 1284863847
+mas 'Handshaker', id: 1012930195
+mas 'Sip', id: 507257563
+mas 'Sketch', id: 402476602
+mas 'Spark', id: 1176895641
+mas 'The Unarchiver', id: 425424353
+mas 'Unsplash Wallpapers', id: 1284863847
