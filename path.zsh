@@ -5,7 +5,7 @@ export PATH="$HOME/.node/bin:$PATH"
 export PATH="node_modules/.bin:vendor/bin:$PATH"
 
 # Make sure PHP 7.1 is loaded
-export PATH="$(brew --prefix homebrew/php/php71)/bin:$PATH"
+# export PATH="$(brew --prefix homebrew/php/php71)/bin:$PATH"
 
 # Make sure coreutils are loaded before system commands
 # I've disabled this for now because I only use "ls" which is
@@ -18,3 +18,6 @@ export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 # Load custom commands
 # Disabled this because I have no custom binaries at the moment.
 export PATH="$DOTFILES/bin:$PATH"
+
+# Flutter.io
+export PATH="/usr/local/Flutter/bin:$PATH"
