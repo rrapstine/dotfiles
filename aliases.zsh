@@ -33,6 +33,7 @@ alias gra="git remote add"
 alias gco="git checkout"
 alias gpush="git push"
 alias gpull="git pull"
+alias gpom="git push origin master"
 alias nah="git reset --hard && git clean -df"
 
 # Vagrant Commands
