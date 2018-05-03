@@ -19,8 +19,11 @@ export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 # Disabled this because I have no custom binaries at the moment.
 export PATH="$DOTFILES/bin:$PATH"
 
-# Android SDK
-export PATH="$HOME/Library/Android/sdk:$PATH"
+# Android SDK Emulator
+export PATH="$HOME/Library/Android/sdk/emulator:$PATH"
+
+# Android SDK Platform Tools
+export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 
 # Flutter.io
 export PATH="/usr/local/Flutter/bin:$PATH"
