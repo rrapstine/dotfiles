@@ -15,7 +15,7 @@ ZSH_CUSTOM=$DOTFILES
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='atom'
+  export EDITOR='code'
 fi
 
 # Set name of the theme to load.

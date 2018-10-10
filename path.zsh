@@ -27,3 +27,6 @@ export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 
 # Flutter.io
 export PATH="/usr/local/Flutter/bin:$PATH"
+
+# PHP Composer
+export PATH="$HOME/.composer/vendor/bin:$PATH"
