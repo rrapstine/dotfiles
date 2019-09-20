@@ -24,6 +24,9 @@ brew bundle -v
 # Make ZSH the default shell environment
 chsh -s $(which zsh)
 
+# Install PHP extensions with PECL
+pecl install memcached imagick
+
 # Install Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
@@ -38,26 +41,18 @@ mv composer.phar /usr/local/bin/composer
 $HOME/.composer/vendor/bin/valet install
 
 # Install global NPM packages
-npm install --global yarn
+npm install --global pnpm
 
 # Create a Sites directory
 # This is a default directory for macOS user accounts but doesn't comes pre-installed
 mkdir $HOME/Sites
 
-# Copy Atom config files to .atom directory
-for file in $HOME/.dotfiles/atom
-do
-  cp -R $file $HOME/.atom
-done
-
-# Install Atom packages
-apm install --packages-file ~/.atom/packages.txt
+# Removes .zshrc from $HOME (if it exists) and symlinks the .zshrc file from the .dotfiles
+rm -rf $HOME/.zshrc
+ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
 
 # Symlink the Mackup config file to the home directory
-ln -s ./.mackup.cfg $HOME/.mackup.cfg
-
-# Copy zshrc.home to $HOME and rename
-cp zshrc.home $HOME/.zshrc
+ln -s $HOME/.dotfiles/.mackup.cfg $HOME/.mackup.cfg
 
 # Set macOS preferences
 # We will run this last because this will reload the shell

@@ -21,6 +21,9 @@ alias clear="clear && ls"
 # Reload Sources
 alias reload="source $HOME/.zshrc"
 
+# Edit dotfiles
+alias zconfig="code $DOTFILES"
+
 # Directories
 alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"
