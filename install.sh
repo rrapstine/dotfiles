@@ -41,7 +41,7 @@ mv composer.phar /usr/local/bin/composer
 $HOME/.composer/vendor/bin/valet install
 
 # Install global NPM packages
-npm install --global pnpm
+npm install -g pnpm
 
 # Create a Sites directory
 # This is a default directory for macOS user accounts but doesn't comes pre-installed

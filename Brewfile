@@ -26,16 +26,17 @@ brew 'zsh-completions'
 
 # Development
 brew 'php'
-brew 'imagick'
+brew 'imagemagick'
 brew 'mariadb'
 brew 'mysql'
 brew 'nginx'
 brew 'node'
+brew 'pkg-config'
 brew 'redis'
 
 # Apps
 cask 'alfred'
-cask 'appcleaner"
+cask 'appcleaner'
 cask 'bartender'
 cask 'caffeine'
 cask 'calibre'
