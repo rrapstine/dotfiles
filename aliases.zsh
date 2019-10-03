@@ -7,7 +7,7 @@ alias mv="mv -iv"
 alias cp="cp -iv"
 
 # List Hidden Files
-alias lsa="ls -la"
+alias lsa="ls -lha"
 
 # Show Number of Files in Directory
 alias numfiles="find * -maxdepth 0 -type d -exec sh -c \"echo -n {} ' ' ; ls -lR {} | wc -l\" \;"
