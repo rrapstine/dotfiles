@@ -1,3 +1,6 @@
+# Activate zsh completions
+fpath=(/usr/local/share/zsh-completions $fpath)
+
 # Path to your dotfiles installation.
 export DOTFILES=$HOME/Code/Personal/configs/dotfiles
 
