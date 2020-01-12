@@ -1,8 +1,8 @@
 # Load Composer tools
 export PATH="$HOME/.composer/vendor/bin:$PATH"
 
-# Load Node pnpm global installed binaries
-export PATH="/usr/local/Cellar/node/12.11.1/pnpm-global/2/node_modules:$PATH"
+# Load Node global installed binaries
+export PATH="$HOME/.node_modules/bin:$PATH"
 
 # Use project specific binaries before global ones
 export PATH="node_modules/.bin:vendor/bin:$PATH"

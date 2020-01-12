@@ -29,6 +29,10 @@ alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"
 alias sites="cd $HOME/Sites"
 
+# Program Commands
+alias python="/usr/local/bin/python3"
+alias pip="/usr/local/bin/pip3"
+
 # Git Commands
 alias gs="git status"
 alias gl="git log"
