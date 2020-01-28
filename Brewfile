@@ -43,12 +43,14 @@ cask 'calibre'
 cask 'docker'
 cask 'dropbox'
 cask 'firefox'
+cask 'firefox-developer-edition'
 cask 'gitkraken'
 cask 'google-backup-and-sync'
 cask 'google-chrome'
 cask 'insomnia'
 cask 'iterm2'
 cask 'java'
+casl 'ndm'
 cask 'qbittorrent'
 cask 'skyfonts'
 cask 'sequel-pro'
@@ -56,8 +58,6 @@ cask 'shuttle'
 cask 'spectacle'
 cask 'spotify'
 cask 'transmit'
-cask 'virtualbox'
-cask 'virtualbox-extension-pack'
 cask 'visual-studio-code'
 cask 'vlc'
 
@@ -78,10 +78,11 @@ cask 'font-source-sans-pro'
 cask 'font-source-serif-pro'
 
 # Mac App Store
-mas 'Bitwarden', id: 1352778147
+mas '1Password', id: 1333542190
 mas 'Keynote', id: 409183694
 mas 'Numbers', id: 409203825
 mas 'Pages', id: 409201541
 mas 'Sip', id: 507257563
-mas 'Spark', id: 1176895641
+mas 'Magnet', id: 441258766
 mas 'The Unarchiver', id: 425424353
+mas 'Xcode', id: 497799835

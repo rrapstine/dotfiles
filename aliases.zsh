@@ -33,6 +33,16 @@ alias sites="cd $HOME/Sites"
 alias python="/usr/local/bin/python3"
 alias pip="/usr/local/bin/pip3"
 
+# Docker Commands
+alias dclean="docker rmi -f $(docker images -qf dangling=true)"
+
+# Docker-Compose Commands
+alias dcomp="docker-compose"
+alias dcup="docker-compose up"
+alias dcbuild="docker-compose up --build"
+alias dcstop="docker-compose stop"
+alias dcclean="docker-compose rm -f"
+
 # Git Commands
 alias gs="git status"
 alias gl="git log"
