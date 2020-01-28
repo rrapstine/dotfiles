@@ -1,8 +1,6 @@
 # Taps
-tap 'caskroom/cask'
-tap 'caskroom/eid'
-tap 'caskroom/fonts'
-tap 'caskroom/versions'
+tap 'homebrew/cask-fonts'
+tap 'homebrew/cask-versions'
 tap 'homebrew/bundle'
 
 # Binaries
@@ -26,16 +24,14 @@ brew 'zsh-completions'
 
 # Development
 brew 'php'
+brew 'python'
 brew 'imagemagick'
 brew 'mariadb'
-brew 'mysql'
 brew 'nginx'
 brew 'node'
 brew 'pkg-config'
-brew 'redis'
 
 # Apps
-cask 'alfred'
 cask 'appcleaner'
 cask 'bartender'
 cask 'caffeine'
@@ -50,12 +46,11 @@ cask 'google-chrome'
 cask 'insomnia'
 cask 'iterm2'
 cask 'java'
-casl 'ndm'
+cask 'ndm'
 cask 'qbittorrent'
 cask 'skyfonts'
 cask 'sequel-pro'
 cask 'shuttle'
-cask 'spectacle'
 cask 'spotify'
 cask 'transmit'
 cask 'visual-studio-code'

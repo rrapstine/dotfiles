@@ -2,7 +2,7 @@
 fpath=(/usr/local/share/zsh-completions $fpath)
 
 # Path to your dotfiles installation.
-export DOTFILES=$HOME/Code/Personal/configs/dotfiles
+export DOTFILES=$HOME/.dotfiles
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -77,8 +77,14 @@ ZSH_THEME="taybalt-custom"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(brew composer git git-extras github httpie laravel5 npm osx vagrant z)
 
+# Fix for insecure completion-dependant directories
+ZSH_DISABLE_COMPFIX=true
+
 # Activate Oh-My-Zsh
 source $ZSH/oh-my-zsh.sh
+
+# Source functions file
+source $DOTFILES/functions.zsh
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"

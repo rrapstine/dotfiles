@@ -31,8 +31,8 @@ pecl install memcached imagick
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # Install Composer
-curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
+# curl -sS https://getcomposer.org/installer | php
+# mv composer.phar /usr/local/bin/composer
 
 # Install global Composer packages
 # /usr/local/bin/composer global require laravel/installer laravel/lumen-installer laravel/spark-installer laravel/valet
@@ -50,8 +50,15 @@ mkdir $HOME/Code
 rm -rf $HOME/.zshrc
 ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
 
+# Copy Oh-My-Zsh theme to correct folder
+cp ./themes/taybalt-custom.zsh-theme $HOME/.oh-my-zsh/themes/
+
 # Symlink the Mackup config file to the home directory
+rm -rf $HOME/.mackup.cfg
 ln -s $HOME/.dotfiles/.mackup.cfg $HOME/.mackup.cfg
+
+# Set dock using dockutil
+sh dock.sh
 
 # Set macOS preferences
 # We will run this last because this will reload the shell
