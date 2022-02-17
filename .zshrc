@@ -32,12 +32,12 @@ ZSH_THEME="taybalt-custom"
 
 # Better history
 # Credits to https://coderwall.com/p/jpj_6q/zsh-better-history-searching-with-arrow-keys
-#autoload -U up-line-or-beginning-search
-#autoload -U down-line-or-beginning-search
-#zle -N up-line-or-beginning-search
-#zle -N down-line-or-beginning-search
-#bindkey "^[[A" up-line-or-beginning-search # Up
-#bindkey "^[[B" down-line-or-beginning-search # Down
+# autoload -U up-line-or-beginning-search
+# autoload -U down-line-or-beginning-search
+# zle -N up-line-or-beginning-search
+# zle -N down-line-or-beginning-search
+# bindkey "^[[A" up-line-or-beginning-search # Up
+# bindkey "^[[B" down-line-or-beginning-search # Down
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -72,7 +72,7 @@ ZSH_THEME="taybalt-custom"
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-#HIST_STAMPS="dd/mm/yyyy"
+# HIST_STAMPS="dd/mm/yyyy"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
