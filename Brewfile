@@ -18,6 +18,7 @@ brew 'httpie'
 brew 'mackup'
 brew 'mas' # Mac App Store manager
 brew 'pkg-config' # https://github.com/driesvints/dotfiles/issues/20
+brew 'thefuck'
 brew 'svn' # Needed to install fonts
 
 # Spatie Medialibrary
@@ -45,18 +46,21 @@ cask 'discord'
 cask 'docker'
 cask 'dropbox'
 cask 'figma'
-cask 'firefox'
+# cask 'firefox'
 cask 'firefox-developer-edition'
 cask 'gitkraken'
-cask 'google-chrome'
+# cask 'google-chrome'
 cask 'imageoptim'
 cask 'insomnia'
 cask 'iterm2'
+cask 'keka'
+cask 'mullvadvpn'
 cask 'pastebot'
+cask 'rectangle'
 cask 'shuttle'
 cask 'skyfonts'
 cask 'spotify'
-cask 'the-unarchiver'
+# cask 'the-unarchiver'
 # cask 'tinkerwell'
 cask 'transmit'
 # cask 'tunnelbear'
@@ -81,5 +85,6 @@ mas 'Keynote', id: 409183694
 mas 'Numbers', id: 409203825
 mas 'Pages', id: 409201541
 mas 'Sip', id: 507257563
-mas 'Magnet', id: 441258766
+mas 'Spike Email - Mail & Team Chat', id: 707452888
+# mas 'Magnet', id: 441258766
 # mas 'Xcode', id: 497799835

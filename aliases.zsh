@@ -21,6 +21,9 @@ alias ..="cd .."
 # List Directory on Clear
 alias clear="clear && ls"
 
+# The Fuck
+eval $(thefuck --alias)
+
 # Reload Sources
 alias reload="source $HOME/.zshrc"
 
