@@ -25,7 +25,7 @@ alias clear="clear && ls"
 eval $(thefuck --alias)
 
 # Reload Sources
-alias reload="source $HOME/.zshrc"
+alias reload="source $DOTFILES/.zshrc && clear && ls"
 
 # Edit dotfiles
 alias zconfig="code $DOTFILES"
@@ -33,15 +33,19 @@ alias zconfig="code $DOTFILES"
 # Directories
 alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"
-alias sites="cd $HOME/Sites"
+alias work="cd $HOME/Code"
 
 # Node Commands
 alias nfresh="rm -rf node_modules/ package-lock.json && npm install"
 alias nwatch="npm run watch"
 
 # Python Commands
-alias python="/usr/local/bin/python3"
-alias pip="/usr/local/bin/pip3"
+alias python=python3
+# alias pip="/usr/local/bin/pip3"
+
+# Node Packages
+alias ngui="npx npm-gui"
+alias readme="npx readme-md-generator"
 
 # Docker Commands
 # alias dclean="docker rmi -f $(docker images -qf dangling=true)"
@@ -63,7 +67,7 @@ alias gra="git remote add"
 alias gco="git checkout"
 alias gpush="git push"
 alias gpull="git pull"
-alias gpom="git push origin master"
+alias gpom="git push origin main"
 alias nah="git reset --hard && git clean -df"
 
 # Vagrant Commands

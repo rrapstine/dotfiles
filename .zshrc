@@ -89,6 +89,12 @@ source $ZSH/oh-my-zsh.sh
 # Source functions file
 source $DOTFILES/functions.zsh
 
+# Setup for pyenv
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+
+echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init --path)"\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -96,3 +102,9 @@ source $DOTFILES/functions.zsh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+fi
