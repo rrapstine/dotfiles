@@ -21,6 +21,9 @@ else
   export EDITOR='code'
 fi
 
+# Source aliases file
+source $DOTFILES/aliases.zsh
+
 # Source functions file
 source $DOTFILES/functions.zsh
 
