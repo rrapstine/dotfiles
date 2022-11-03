@@ -15,7 +15,7 @@ dockutil --no-restart --add "/Applications/Figma.app"
 dockutil --no-restart --add "/Applications/Visual Studio Code.app"
 dockutil --no-restart --add "/Applications/GitKraken.app"
 dockutil --no-restart --add "/Applications/Insomnia.app"
-dockutil --no-restart --add "/Applications/iTerm.app"
+dockutil --no-restart --add "/Applications/Warp.app"
 dockutil --no-restart --add "/System/Applications/Utilities/Activity Monitor.app"
 
 dockutil --add '~/Documents' --view grid --display folder --sort name

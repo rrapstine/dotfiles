@@ -52,7 +52,6 @@ cask "google-chrome"
 cask "hiddenbar" # Hide menu bar items
 cask "imageoptim" # Image compression
 cask "insomnia" # REST API client
-cask "iterm2"
 cask "keka" # Archive manager
 cask "maccy" # Clipboard manager
 cask "monitorcontrol" # Control external monitors
@@ -73,6 +72,7 @@ cask "steam"
 cask "tableplus" # Database management
 cask "transmission" # Torrent client
 cask "visual-studio-code"
+cask "warp" # Terminal emulator
 cask "wrike" # Project management
 
 mas "GarageBand", id: 682658836
