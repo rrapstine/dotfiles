@@ -1,90 +1,84 @@
-# Taps
-tap 'homebrew/cask'
-tap 'homebrew/cask-fonts'
-tap 'homebrew/cask-versions'
-tap 'homebrew/bundle'
-tap 'nicoverbruggen/homebrew-cask'
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "homebrew/cask-versions"
+tap "homebrew/core"
+tap "homebrew/services"
+tap "nicoverbruggen/cask"
 
 # Binaries
 brew 'bash' # Latest Bash version
 brew 'coreutils' # Those that come with macOS are outdated
-brew 'dockutil'
-brew 'ffmpeg'
-brew 'gh'
-brew 'git'
-brew 'gnupg'
-brew 'grep'
-brew 'httpie'
-brew 'mackup'
+brew 'dockutil' # Used to manage the dock
+brew 'gh' # GitHub CLI
+brew 'git' # Latest Git version
+brew 'gnupg' # GPG key management
+brew 'grep' # Latest grep version
+brew 'httpie' # Modern command line HTTP client
+brew 'mackup' # Sync your application settings
 brew 'mas' # Mac App Store manager
 brew 'pkg-config' # https://github.com/driesvints/dotfiles/issues/20
-brew 'thefuck'
+brew 'thefuck' # Corrects your previous console command
 brew 'svn' # Needed to install fonts
 
-# Spatie Medialibrary
-brew 'jpegoptim'
-brew 'optipng'
-brew 'pngquant'
-brew 'svgo'
-brew 'gifsicle'
-
 # Development
+brew 'docker'
+brew 'nvm' # Node version management
 brew 'php'
-brew 'python' 
-brew 'composer'
-brew 'imagemagick'
-brew 'node'
-brew 'yarn'
+brew 'pyenv' # Python version management
+brew 'ruby'
 
-# Apps
-cask 'appcleaner'
-cask 'bartender'
-cask 'caffeine'
-cask 'calibre'
-cask 'dbngin'
-cask 'discord'
-cask 'docker'
-cask 'dropbox'
-cask 'figma'
-# cask 'firefox'
-cask 'firefox-developer-edition'
-cask 'gitkraken'
-# cask 'google-chrome'
-cask 'imageoptim'
-cask 'insomnia'
-cask 'iterm2'
-cask 'keka'
-cask 'mullvadvpn'
-cask 'pastebot'
-cask 'rectangle'
-cask 'shuttle'
-cask 'skyfonts'
-cask 'spotify'
-# cask 'the-unarchiver'
-# cask 'tinkerwell'
-cask 'transmit'
-# cask 'tunnelbear'
-cask 'visual-studio-code'
+# Applications
+cask "appcleaner"
+cask "caffeine" # Prevents your Mac from going to sleep
+cask "cakebrew" # GUI for Homebrew
+cask "calibre"
+cask "dbngin" # Database management
+cask "discord"
+cask "docker"
+cask "dropbox"
+cask "figma"
+cask "firefox-developer-edition"
+cask "folx" # Download manager
+cask "font-lato"
+cask "font-open-sans"
+cask "font-roboto"
+cask "font-source-code-pro"
+cask "font-source-code-pro-for-powerline"
+cask "font-source-sans-pro"
+cask "font-source-serif-pro"
+cask "gitkraken"
+cask "google-chrome"
+cask "hiddenbar" # Hide menu bar items
+cask "imageoptim" # Image compression
+cask "insomnia" # REST API client
+cask "iterm2"
+cask "keka" # Archive manager
+cask "maccy" # Clipboard manager
+cask "monitorcontrol" # Control external monitors
+cask "obsidian"
+cask "ogdesign-eagle"
+cask "qlmarkdown" # Quicklook plugin for Markdown files
+cask "quicklook-csv" # Quicklook plugin for CSV files
+cask "quicklook-json" # Quicklook plugin for JSON files
+cask "raindropio"
+cask "raycast" # Spotlight alternative
+cask "rectangle" # Window management
+cask "shottr" # Screenshot tool
+cask "shuttle" # Shortcut manager
+cask "skyfonts"
+cask "slack"
+cask "spotify"
+cask "steam"
+cask "tableplus" # Database management
+cask "transmission" # Torrent client
+cask "visual-studio-code"
+cask "wrike" # Project management
 
-# Quicklook
-cask 'qlmarkdown'
-cask 'quicklook-csv'
-cask 'quicklook-json'
-
-# Fonts
-cask 'font-lato'
-cask 'font-open-sans'
-cask 'font-roboto'
-cask 'font-source-code-pro-for-powerline'
-cask 'font-source-code-pro'
-cask 'font-source-sans-pro'
-cask 'font-source-serif-pro'
-
-# Mac App Store
-mas 'Keynote', id: 409183694
-mas 'Numbers', id: 409203825
-mas 'Pages', id: 409201541
-mas 'Sip', id: 507257563
-mas 'Spike Email - Mail & Team Chat', id: 707452888
-# mas 'Magnet', id: 441258766
-# mas 'Xcode', id: 497799835
+mas "GarageBand", id: 682658836
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
+mas "Magnet", id: 441258766
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Sip", id: 507257563

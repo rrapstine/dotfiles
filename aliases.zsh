@@ -17,6 +17,7 @@ alias numfiles="find * -maxdepth 0 -type d -exec sh -c \"echo -n {} ' ' ; ls -lR
 
 # General QoL
 alias ..="cd .."
+alias nuke="rm -rf"
 
 # List Directory on Clear
 alias clear="clear && ls"
@@ -38,6 +39,7 @@ alias work="cd $HOME/Code"
 # Node Commands
 alias nfresh="rm -rf node_modules/ package-lock.json && npm install"
 alias nwatch="npm run watch"
+alias pn="pnpm"
 
 # Python Commands
 alias python=python3

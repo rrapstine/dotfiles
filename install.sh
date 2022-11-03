@@ -26,14 +26,33 @@ brew update
 brew tap homebrew/bundle
 brew bundle --file $DOTFILES/Brewfile -v
 
-# Install PHP extensions with PECL
-pecl install imagick
+# Setup for nvm
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-# Install global Composer packages
-# /usr/local/bin/composer global require laravel/installer laravel/valet beyondcode/expose
+# Install node using nvm
+nvm install node
 
-# Install Laravel Valet
-# $HOME/.composer/vendor/bin/valet install
+# Set global node version
+nvm alias default node
+
+# Activate pnpm with Corepack
+corepack enable
+
+# Setup for pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+fi
+
+# Install latest python with pyenv
+pyenv install 3.10
+
+# Set global python version
+pyenv global 3.10
 
 # Create a Code directory
 mkdir $HOME/Code
