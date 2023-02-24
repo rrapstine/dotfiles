@@ -72,10 +72,5 @@ alias gpull="git pull"
 alias gpom="git push origin main"
 alias nah="git reset --hard && git clean -df"
 
-# Vagrant Commands
-alias vssh="vagrant ssh"
-alias vstat="vagrant status"
-alias vhalt="vagrant halt"
-alias vup="vagrant up"
-alias vrel="vagrant reload"
-
+# Laravel Commands
+alias sail="[ -f sail ] && sh sail || sh vendor/bin/sail"

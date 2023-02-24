@@ -3,7 +3,8 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # Enable zsh completions
-# autoload -Uz compinit && compinit
+fpath=(~/.zsh_completions $fpath)
+autoload -Uz compinit && compinit -u
 
 # Path to dotfiles installation
 export DOTFILES=$HOME/.dotfiles
@@ -26,6 +27,9 @@ source $DOTFILES/aliases.zsh
 
 # Source functions file
 source $DOTFILES/functions.zsh
+
+# Source path file
+source $DOTFILES/path.zsh
 
 # Setup for nvm
 export NVM_DIR="$HOME/.nvm"
