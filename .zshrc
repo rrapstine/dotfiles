@@ -1,3 +1,6 @@
+# Export Host UID
+export HOST_UID=$(id -u)
+
 # Manually set the language environment
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -5,6 +8,9 @@ export LANG=en_US.UTF-8
 # Enable zsh completions
 fpath=(~/.zsh_completions $fpath)
 autoload -Uz compinit && compinit -u
+
+# Enable zoxide
+eval "$(zoxide init zsh)"
 
 # Path to dotfiles installation
 export DOTFILES=$HOME/.dotfiles
@@ -33,8 +39,8 @@ source $DOTFILES/path.zsh
 
 # Setup for nvm
 export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"                                       # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 
 # Setup for pyenv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -49,3 +55,27 @@ fi
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/richard/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/richard/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/richard/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/richard/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# bun completions
+[ -s "/Users/richard/.bun/_bun" ] && source "/Users/richard/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

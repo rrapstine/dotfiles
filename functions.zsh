@@ -1,6 +1,12 @@
-# List Directory on CD
+# List directory on CD
 function cd() {
 	builtin cd "$@";
+	ls;
+}
+
+# List directory when using zoxide
+function z() {
+	__zoxide_z $@;
 	ls;
 }
 
