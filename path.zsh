@@ -1,6 +1,9 @@
 # Load dotfiles binaries
 export PATH="$DOTFILES/bin:$PATH"
 
+# Load Go binaries
+export PATH="$HOME/go/bin:$PATH"
+
 # Load Composer tools
 export PATH="$HOME/.composer/vendor/bin:$PATH"
 
