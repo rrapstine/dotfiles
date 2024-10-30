@@ -4,13 +4,19 @@ alias copyssh="pbcopy < $HOME/.ssh/id_ed25519.pub"
 # List Directory Using Updated CoreUtils
 alias ll="$(brew --prefix coreutils)/libexec/gnubin/ls -AhlFo --color --group-directories-first"
 
+# Use eza in place of ls
+alias ls="eza -x --git --group-directories-first"
+
+# Use eza in place of ls -lha
+alias lsa="eza -x -a --git --group-directories-first"
+
+# Use eza in place of tree
+alias tree="eza -TL 2"
+
 # Prompt on Remove, Move and Copy
 alias rm="rm -iv"
 alias mv="mv -iv"
 alias cp="cp -iv"
-
-# List Hidden Files
-alias lsa="ls -lha"
 
 # Show Number of Files in Directory
 alias numfiles="find * -maxdepth 0 -type d -exec sh -c \"echo -n {} ' ' ; ls -lR {} | wc -l\" \;"
@@ -39,7 +45,6 @@ alias work="cd $HOME/Code"
 # Node Commands
 alias nfresh="rm -rf node_modules/ package-lock.json && npm install"
 alias nwatch="npm run watch"
-alias pn="pnpm"
 
 # Python Commands
 alias python=python3
@@ -47,7 +52,10 @@ alias python=python3
 
 # Node Packages
 alias ngui="npx npm-gui"
-alias readme="npx readme-md-generator"
+alias readme-gen="npx readme-md-generator"
+
+# Go Binaries
+alias air="~/go/bin/air"
 
 # Docker Commands
 # alias dclean="docker rmi -f $(docker images -qf dangling=true)"

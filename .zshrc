@@ -58,20 +58,21 @@ fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/richard/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('/Users/richard/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
 if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
+  eval "$__conda_setup"
 else
-    if [ -f "/Users/richard/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/richard/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/richard/opt/anaconda3/bin:$PATH"
-    fi
+  if [ -f "/Users/richard/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+    . "/Users/richard/opt/anaconda3/etc/profile.d/conda.sh"
+  else
+    export PATH="/Users/richard/opt/anaconda3/bin:$PATH"
+  fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# This loads nvm bash_completion
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # bun completions
 [ -s "/Users/richard/.bun/_bun" ] && source "/Users/richard/.bun/_bun"
