@@ -1,6 +1,9 @@
 # Load dotfiles binaries
 export PATH="$DOTFILES/bin:$PATH"
 
+# Load Homebrew binaries
+export PATH="/opt/homebrew/bin:$PATH"
+
 # Load Go binaries
 export PATH="$HOME/go/bin:$PATH"
 
@@ -16,7 +19,7 @@ export PATH="node_modules/.bin:vendor/bin:$PATH"
 # Use Homebrew version of Ruby over MacOS version
 if [ -d "/opt/homebrew/opt/ruby/bin" ]; then
   export PATH=/opt/homebrew/opt/ruby/bin:$PATH
-  export PATH=`gem environment gemdir`/bin:$PATH
+  export PATH=$(gem environment gemdir)/bin:$PATH
 fi
 
 # Make sure coreutils are loaded before system commands

@@ -35,7 +35,7 @@ eval $(thefuck --alias)
 alias reload="source $DOTFILES/.zshrc && clear && ls"
 
 # Edit dotfiles
-alias zconfig="code $DOTFILES"
+alias zconfig="nvim $DOTFILES"
 
 # Directories
 alias dotfiles="cd $DOTFILES"

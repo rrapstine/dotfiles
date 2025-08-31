@@ -18,6 +18,9 @@ export DOTFILES=$HOME/.dotfiles
 # Path to warp config folder
 export WARP=$HOME/.warp
 
+# Path to wezterm config folder
+export WEZTERM_CONFIG_DIR=$HOME/.config/wezterm
+
 # Would you like to use another custom folder than $ZSH/custom?
 ZSH_CUSTOM=$DOTFILES
 
@@ -25,7 +28,7 @@ ZSH_CUSTOM=$DOTFILES
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='code'
+  export EDITOR='nvim'
 fi
 
 # Source aliases file
@@ -82,3 +85,6 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 PATH=~/.console-ninja/.bin:$PATH
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/richard/.cache/lm-studio/bin"
