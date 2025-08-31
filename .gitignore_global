@@ -35,6 +35,36 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+.AppleDouble
+.LSOverride
+~$*
+
+# Editor/IDE folders and files #
+###############################
 .idea/
-.vscode
+.vscode/
 .vagrant/
+*.code-workspace
+*.sublime-workspace
+*.sublime-project
+
+# Node, Python, Ruby, etc. artifacts #
+######################################
+node_modules/
+dist/
+.env
+*.pyc
+__pycache__/
+coverage/
+
+# Editor/Tool backups #
+#######################
+*.bak
+*.tmp
+*.orig
+*.swp
+
+# Miscellaneous #
+#################
+*.pid
+*.seed
