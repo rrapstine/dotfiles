@@ -42,6 +42,7 @@ cask "ogdesign-eagle"
 cask "penpot"
 cask "raycast"
 cask "rectangle"
+cask "wezterm"
 
 mas "Canary Mail", id: 1236045954
 mas "Dropover", id: 1355679052
