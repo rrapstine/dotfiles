@@ -41,7 +41,7 @@ Thumbs.db
 
 # Editor/IDE folders and files #
 ###############################
-.*aider
+.aider*
 .idea/
 .vscode/
 .vagrant/
