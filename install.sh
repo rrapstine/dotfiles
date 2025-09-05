@@ -25,6 +25,38 @@ brew update
 brew tap homebrew/bundle
 brew bundle --file $DOTFILES/Brewfile -v
 
+# Function to check SSH setup with GitHub
+check_ssh() {
+    echo "Checking SSH authentication with GitHub..."
+    if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+        echo "SSH is already set up with GitHub."
+    else
+        echo "SSH is not set up with GitHub. Setting it up now..."
+        setup_ssh
+    fi
+}
+
+# Function to set up SSH keys
+setup_ssh() {
+    # Check if an ED25519 SSH key already exists
+    if [ ! -f "$HOME/.ssh/id_ed25519.pub" ]; then
+        echo "No ED25519 SSH key found. Generating a new SSH key..."
+        ssh-keygen -t ed25519 -C "your_email@example.com" -N "" -f "$HOME/.ssh/id_ed25519"
+    else
+        echo "ED25519 SSH key already exists. Skipping key generation."
+    fi
+
+    # Display the public key
+    echo "Copy the following SSH public key to your GitHub account:"
+    cat "$HOME/.ssh/id_ed25519.pub"
+
+    echo "Once you have added the key to https://github.com/settings/keys, press Enter to continue."
+    read -p ""
+}
+
+# Ensure SSH is set up before cloning Fish repository
+check_ssh
+
 # Ensure that my fish config is pulled down into the proper location
 if [[ -d "$HOME/.config/fish" ]]; then
   echo "Fish is already configured"
