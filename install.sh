@@ -2,6 +2,14 @@
 
 echo "Setting up your Mac..."
 
+# Check if Xcode Command Line Tools are installed
+if ! xcode-select -p &>/dev/null; then
+  echo "Xcode Command Line Tools not found. Installing..."
+  xcode-select --install
+else
+  echo "Xcode Command Line Tools already installed."
+fi
+
 # Check for Homebrew and install if we don't have it
 if test ! $(which brew); then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -10,10 +18,6 @@ if test ! $(which brew); then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Removes .zshrc from $HOME (if it exists) and symlinks the .zshrc file from the .dotfiles
-rm -rf $HOME/.zshrc
-ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
-
 # Update Homebrew recipes
 brew update
 
@@ -21,36 +25,21 @@ brew update
 brew tap homebrew/bundle
 brew bundle --file $DOTFILES/Brewfile -v
 
-# Setup for nvm
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-# Install node using nvm
-nvm install node
-
-# Set global node version
-nvm alias default node
-
-# Activate pnpm with Corepack
-corepack enable
-
-# Setup for pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
+# Ensure that my fish config is pulled down into the proper location
+if [[ -d "$HOME/.config/fish" ]]; then
+  echo "Fish is already configured"
+else
+  git clone git@github.com:rrapstine/fish.git $HOME/.config/fish
 fi
 
-# Install latest python with pyenv
-pyenv install 3.10
+# Set fish as default shell
+sudo chsh -s /opt/homebrew/bin/fish $USER
 
-# Set global python version
-pyenv global 3.10
-
-# Create a Code directory
+# Create a Code directory and subdirectories
 mkdir $HOME/Code
+mkdir $HOME/Code/projects
+mkdir $HOME/Code/scripts
+mkdir $HOME/Code/templates
 
 # Clone Github repositories
 # $DOTFILES/clone.sh
