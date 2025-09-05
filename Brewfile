@@ -25,6 +25,7 @@ brew "topgrade"
 brew "tmux"
 brew "yazi"
 brew "yq"
+brew "zellij"
 brew "zoxide"
 
 cask "anytype"
