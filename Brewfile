@@ -1,5 +1,6 @@
 tap "buo/cask-upgrade"
 tap "FelixKratz/formulae"
+tap "nikitabobko/aerospace"
 
 brew "font-hack-nerd-font"
 brew "font-iosevka-nerd-font"
@@ -35,6 +36,7 @@ brew "yq"
 brew "zellij"
 brew "zoxide"
 
+casl "aerospace"
 cask "anytype"
 cask "appcleaner"
 cask "bruno"
