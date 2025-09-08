@@ -1,7 +1,13 @@
+tap "homebrew/cask-fonts"
+tap "buo/cask-upgrade"
+tap "FelixKratz/formulae"
+
+brew "font-hack-nerd-font"
+brew "font-iosevka-nerd-font"
+
 brew "bat"
-brew "bun"
+brew "oven-sh/bun/bun"
 brew "delta"
-brew "dog"
 brew "dockutil"
 brew "dust"
 brew "eza"
@@ -17,7 +23,6 @@ brew "neovim"
 brew "node"
 brew "podman"
 brew "podman-compose"
-brew "podman-docker"
 brew "procs"
 brew "python"
 brew "ripgrep"
@@ -34,7 +39,7 @@ cask "appcleaner"
 cask "bruno"
 cask "discord"
 cask "figma"
-cask "firefox-developer-edition"
+cask "firefox@developer-edition"
 cask "folx"
 cask "hiddenbar"
 cask "keka"
@@ -52,5 +57,5 @@ mas "Ghostery Privacy Ad Blocker", id: 6504861501
 mas "Keynote", id: 409183694
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
-mas "Sip", id: 507257563
-mas "Xcode", id: 497799835
+#mas "Sip", id: 507257563
+#mas "Xcode", id: 497799835
