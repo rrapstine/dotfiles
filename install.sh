@@ -67,6 +67,13 @@ fi
 # Set fish as default shell
 sudo chsh -s /opt/homebrew/bin/fish $USER
 
+# Clone my neovim config down
+if [[ -d "$HOME/.config/nvim" ]]; then
+    echo "Neovim is already configured"
+else
+    git clone git@github.com:rrapstine/nvim.git $HOME/.config/nvim
+fi
+
 # Create a Code directory and subdirectories
 mkdir $HOME/Code
 mkdir $HOME/Code/projects
