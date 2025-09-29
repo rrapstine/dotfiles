@@ -29,12 +29,17 @@ Options:
         --symlinks-only     Only create symlinks, skip package installation
         --no-symlinks       Skip symlink creation
         --dry-run           Show what would be done without making changes
+        --uninstall CONFIG  Remove symlinks for specific config or 'all'
+        --clean             Remove broken symlinks only
 
 Examples:
     $0                      # Auto-detect OS and install everything
     $0 --os macos           # Force macOS installation
     $0 --symlinks-only      # Only create symlinks
     $0 --dry-run            # Preview changes without applying them
+    $0 --uninstall nvim     # Remove nvim config symlinks
+    $0 --uninstall all      # Remove all dotfiles symlinks
+    $0 --clean              # Clean up broken symlinks
 
 EOF
 }
@@ -44,6 +49,8 @@ main() {
     local symlinks_only=false
     local no_symlinks=false
     local dry_run=false
+    local uninstall_target=""
+    local clean_mode=false
 
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
@@ -66,6 +73,22 @@ main() {
                 ;;
             --dry-run)
                 dry_run=true
+                shift
+                ;;
+            --uninstall)
+                if [[ -z "$2" || "$2" =~ ^-- ]]; then
+                    log_error "Missing argument for --uninstall"
+                    echo "Usage: --uninstall <config_name|all>"
+                    echo "Examples:"
+                    echo "  $0 --uninstall nvim     # Remove nvim config only"
+                    echo "  $0 --uninstall all      # Remove all dotfiles"
+                    exit 1
+                fi
+                uninstall_target="$2"
+                shift 2
+                ;;
+            --clean)
+                clean_mode=true
                 shift
                 ;;
             *)
@@ -102,6 +125,24 @@ main() {
             exit 1
             ;;
     esac
+
+    # Handle uninstall mode
+    if [[ -n "$uninstall_target" ]]; then
+        if [[ "$uninstall_target" == "all" ]]; then
+            remove_symlinks "$detected_os"
+            log_success "All dotfiles symlinks removed!"
+        else
+            remove_single_config "$uninstall_target" "$detected_os"
+            log_success "Removed symlinks for: $uninstall_target"
+        fi
+        exit 0
+    fi
+
+    # Handle clean mode
+    if [[ "$clean_mode" == true ]]; then
+        clean_broken_symlinks
+        exit 0
+    fi
 
     if [[ "$dry_run" == true ]]; then
         log_warn "DRY RUN MODE - No changes will be made"

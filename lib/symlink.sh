@@ -183,3 +183,64 @@ remove_symlinks() {
         fi
     fi
 }
+
+remove_single_config() {
+    local config_name="$1"
+    local os="$2"
+
+    log_info "Removing symlinks for config: $config_name"
+
+    # Check and remove from bin
+    local bin_target="$HOME/.local/bin/$config_name"
+    if [[ -L "$bin_target" ]]; then
+        local source_path="$(readlink "$bin_target")"
+        if [[ "$source_path" == "$DOTFILES_ROOT/bin/$config_name" ]]; then
+            log_info "Removing bin symlink: $bin_target"
+            rm "$bin_target"
+        fi
+    fi
+
+    # Check and remove from .config
+    local config_target="$HOME/.config/$config_name"
+    if [[ -L "$config_target" ]]; then
+        local source_path="$(readlink "$config_target")"
+        if [[ "$source_path" =~ ^$DOTFILES_ROOT/config/ ]]; then
+            log_info "Removing config symlink: $config_target"
+            rm "$config_target"
+        fi
+    fi
+}
+
+clean_broken_symlinks() {
+    log_info "Cleaning broken symlinks..."
+    
+    local broken_count=0
+    
+    # Clean broken symlinks in ~/.local/bin
+    if [[ -d "$HOME/.local/bin" ]]; then
+        while IFS= read -r -d '' symlink; do
+            if [[ ! -e "$symlink" ]]; then
+                log_info "Removing broken symlink: $symlink"
+                rm "$symlink"
+                ((broken_count++))
+            fi
+        done < <(find "$HOME/.local/bin" -type l -print0 2>/dev/null)
+    fi
+    
+    # Clean broken symlinks in ~/.config
+    if [[ -d "$HOME/.config" ]]; then
+        while IFS= read -r -d '' symlink; do
+            if [[ ! -e "$symlink" ]]; then
+                log_info "Removing broken symlink: $symlink"
+                rm "$symlink"
+                ((broken_count++))
+            fi
+        done < <(find "$HOME/.config" -type l -print0 2>/dev/null)
+    fi
+    
+    if [[ $broken_count -eq 0 ]]; then
+        log_success "No broken symlinks found"
+    else
+        log_success "Removed $broken_count broken symlink(s)"
+    fi
+}
