@@ -16,7 +16,7 @@ source "$DOTFILES_ROOT/lib/symlink.sh"
 
 print_banner() {
     echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                      Dotfiles Manager                       ║"
+    echo "║                      Dotfiles Manager                        ║"
     echo "║                    CLI Configuration Tool                    ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
     echo
@@ -24,13 +24,17 @@ print_banner() {
 
 show_help() {
     local command="$1"
-    
+
     case "$command" in
         install)
             cat << EOF
-Usage: dotfiles install [options]
+Usage: dotfiles install [config] [options]
 
 Install dotfiles configuration and create symlinks.
+
+Arguments:
+    config                      Optional: Install specific configuration only (e.g., hypr, nvim, fish)
+                               If omitted, installs all configurations
 
 Options:
     -o, --os OS                 Force specific OS (macos, arch)
@@ -40,9 +44,12 @@ Options:
 
 Examples:
     dotfiles install                    # Auto-detect OS and install everything
-    dotfiles install --os arch          # Force Arch Linux installation
-    dotfiles install --symlinks-only    # Only create symlinks
+    dotfiles install hypr               # Install only hypr configuration
+    dotfiles install nvim --os arch     # Install nvim with forced OS
+    dotfiles install fish --symlinks-only    # Install fish symlinks only
     dotfiles install --dry-run          # Preview changes without applying them
+
+Note: When installing OS-specific configs (like hypr) on a different OS, you'll be prompted for confirmation.
 
 EOF
             ;;
@@ -132,7 +139,7 @@ EOF
 Usage: dotfiles <command> [options]
 
 Commands:
-    install [options]           Install dotfiles configuration
+    install [config] [options]  Install dotfiles configuration (optionally specific config)
     remove <config|all>         Remove symlinks for specific config or all
     clean                       Remove broken symlinks
     status                      Show current symlink status
@@ -148,9 +155,10 @@ Install Options:
 
 Examples:
     dotfiles install                    # Auto-detect OS and install everything
-    dotfiles install --os arch          # Force Arch Linux installation
-    dotfiles install --symlinks-only    # Only create symlinks
-    dotfiles install --dry-run          # Preview changes without applying them
+    dotfiles install hypr               # Install only hypr configuration
+    dotfiles install nvim --os arch     # Install nvim with forced OS
+    dotfiles install --symlinks-only    # Only create symlinks for all configs
+    dotfiles install fish --dry-run     # Preview fish installation
     dotfiles remove nvim                # Remove nvim config symlinks
     dotfiles remove all                 # Remove all dotfiles symlinks
     dotfiles clean                      # Clean up broken symlinks
@@ -170,9 +178,9 @@ show_status() {
     echo "Root: $DOTFILES_ROOT"
     echo "OS: $os"
     echo
-    
+
     local found_symlinks=false
-    
+
     # Check bin scripts
     echo "Bin Scripts:"
     if [[ -d "$DOTFILES_ROOT/bin" ]]; then
@@ -190,10 +198,10 @@ show_status() {
     else
         echo "  (no bin directory)"
     fi
-    
+
     echo
     echo "Config Directories:"
-    
+
     # Check universal configs
     if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
         for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
@@ -208,7 +216,7 @@ show_status() {
             fi
         done
     fi
-    
+
     # Check OS-specific configs
     local os_config_dir="$DOTFILES_ROOT/config/$os"
     if [[ -d "$os_config_dir" ]]; then
@@ -224,7 +232,7 @@ show_status() {
             fi
         done
     fi
-    
+
     # Check Linux configs for Linux distros
     if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
         local linux_config_dir="$DOTFILES_ROOT/config/linux"
@@ -242,7 +250,7 @@ show_status() {
             done
         fi
     fi
-    
+
     if [[ "$found_symlinks" == false ]]; then
         echo "  (no active symlinks found)"
     fi
@@ -252,7 +260,7 @@ show_list() {
     local os="$1"
     echo "Available Configurations:"
     echo "========================="
-    
+
     # List bin scripts
     echo "Bin Scripts:"
     if [[ -d "$DOTFILES_ROOT/bin" ]]; then
@@ -264,10 +272,10 @@ show_list() {
     else
         echo "  (none)"
     fi
-    
+
     echo
     echo "Config Directories:"
-    
+
     # List universal configs
     echo "  Universal:"
     if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
@@ -279,7 +287,7 @@ show_list() {
     else
         echo "    (none)"
     fi
-    
+
     # List OS-specific configs
     echo "  $os:"
     local os_config_dir="$DOTFILES_ROOT/config/$os"
@@ -292,7 +300,7 @@ show_list() {
     else
         echo "    (none)"
     fi
-    
+
     # List Linux configs for Linux distros
     if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
         echo "  Linux:"
@@ -314,6 +322,7 @@ handle_install() {
     local symlinks_only=false
     local no_symlinks=false
     local dry_run=false
+    local config_name=""
 
     # Parse install-specific arguments
     while [[ $# -gt 0 ]]; do
@@ -334,10 +343,21 @@ handle_install() {
                 dry_run=true
                 shift
                 ;;
-            *)
+            -*)
                 log_error "Unknown install option: $1"
-                show_help
+                show_help install
                 exit 1
+                ;;
+            *)
+                # First non-option argument is the config name
+                if [[ -z "$config_name" ]]; then
+                    config_name="$1"
+                else
+                    log_error "Too many arguments. Only one config name allowed."
+                    show_help install
+                    exit 1
+                fi
+                shift
                 ;;
         esac
     done
@@ -374,30 +394,65 @@ handle_install() {
         echo
     fi
 
-    # Check if OS-specific installer exists
-    local os_installer="$DOTFILES_ROOT/os/$detected_os/install.sh"
-    if [[ ! -f "$os_installer" ]]; then
-        log_error "OS installer not found: $os_installer"
-        exit 1
-    fi
+    # Handle selective installation
+    if [[ -n "$config_name" ]]; then
+        # Installing specific configuration
+        log_info "Installing specific configuration: $config_name"
 
-    # Run OS-specific installation (unless symlinks-only)
-    if [[ "$symlinks_only" != true ]]; then
-        if [[ "$dry_run" == true ]]; then
-            log_info "Would run OS-specific installer: $os_installer"
-        else
-            log_info "Running OS-specific installer..."
-            source "$os_installer"
+        local config_category="$(get_config_category "$config_name" "$detected_os")"
+
+        if [[ -z "$config_category" ]]; then
+            log_error "Configuration '$config_name' not found"
+            echo
+            echo "Available configurations:"
+            show_list "$detected_os"
+            exit 1
         fi
-    fi
 
-    # Create symlinks (unless disabled)
-    if [[ "$no_symlinks" != true ]]; then
-        if [[ "$dry_run" == true ]]; then
-            log_info "Would auto-discover and create symlinks for OS: $detected_os"
-            # Show what symlinks would be created (existing dry-run logic from install.sh)
-        else
-            create_symlinks "$detected_os"
+        # Check if config is appropriate for current OS
+        if ! validate_config_for_os "$config_name" "$config_category" "$detected_os"; then
+            if ! prompt_os_mismatch "$config_name" "$config_category" "$detected_os"; then
+                log_info "Installation cancelled by user"
+                exit 0
+            fi
+        fi
+
+        # Skip OS-specific installation for selective install
+        # Create symlinks for specific config only (unless disabled)
+        if [[ "$no_symlinks" != true ]]; then
+            if [[ "$dry_run" == true ]]; then
+                log_info "Would create symlinks for config: $config_name ($config_category)"
+            else
+                create_single_config_symlink "$config_name" "$config_category" "$detected_os"
+            fi
+        fi
+    else
+        # Installing all configurations (existing behavior)
+        # Check if OS-specific installer exists
+        local os_installer="$DOTFILES_ROOT/os/$detected_os/install.sh"
+        if [[ ! -f "$os_installer" ]]; then
+            log_error "OS installer not found: $os_installer"
+            exit 1
+        fi
+
+        # Run OS-specific installation (unless symlinks-only)
+        if [[ "$symlinks_only" != true ]]; then
+            if [[ "$dry_run" == true ]]; then
+                log_info "Would run OS-specific installer: $os_installer"
+            else
+                log_info "Running OS-specific installer..."
+                source "$os_installer"
+            fi
+        fi
+
+        # Create symlinks (unless disabled)
+        if [[ "$no_symlinks" != true ]]; then
+            if [[ "$dry_run" == true ]]; then
+                log_info "Would auto-discover and create symlinks for OS: $detected_os"
+                # Show what symlinks would be created (existing dry-run logic from install.sh)
+            else
+                create_symlinks "$detected_os"
+            fi
         fi
     fi
 
@@ -417,7 +472,7 @@ handle_install() {
 
 handle_remove() {
     local target="$1"
-    
+
     if [[ -z "$target" ]]; then
         log_error "Missing argument for remove command"
         echo "Usage: dotfiles remove <config_name|all>"
@@ -428,7 +483,7 @@ handle_remove() {
     fi
 
     local detected_os="$(detect_os)"
-    
+
     if [[ "$target" == "all" ]]; then
         remove_symlinks "$detected_os"
         log_success "All dotfiles symlinks removed!"
@@ -446,35 +501,141 @@ find_config_path() {
     local config_name="$1"
     local detected_os="$2"
     local found_paths=()
-    
+
     # Check universal configs first
     if [[ -d "$DOTFILES_ROOT/config/universal/$config_name" ]]; then
         found_paths+=("$DOTFILES_ROOT/config/universal/$config_name")
     fi
-    
+
     # Check OS-specific configs
     if [[ -d "$DOTFILES_ROOT/config/$detected_os/$config_name" ]]; then
         found_paths+=("$DOTFILES_ROOT/config/$detected_os/$config_name")
     fi
-    
+
     # Check Linux configs for Linux distros
     if [[ "$detected_os" =~ ^(arch|debian|redhat|linux)$ ]]; then
         if [[ -d "$DOTFILES_ROOT/config/linux/$config_name" ]]; then
             found_paths+=("$DOTFILES_ROOT/config/linux/$config_name")
         fi
     fi
-    
+
     # Check bin scripts
     if [[ -f "$DOTFILES_ROOT/bin/$config_name" ]]; then
         found_paths+=("$DOTFILES_ROOT/bin/$config_name")
     fi
-    
+
     echo "${found_paths[@]}"
+}
+
+get_config_category() {
+    local config_name="$1"
+    local detected_os="$2"
+
+    # Check in order of priority: universal -> os-specific -> all other os dirs -> bin
+    if [[ -d "$DOTFILES_ROOT/config/universal/$config_name" ]]; then
+        echo "universal"
+    elif [[ -d "$DOTFILES_ROOT/config/$detected_os/$config_name" ]]; then
+        echo "$detected_os"
+    elif [[ -d "$DOTFILES_ROOT/config/linux/$config_name" ]]; then
+        echo "linux"
+    elif [[ -d "$DOTFILES_ROOT/config/macos/$config_name" ]]; then
+        echo "macos"
+    elif [[ -d "$DOTFILES_ROOT/config/arch/$config_name" ]]; then
+        echo "arch"
+    elif [[ -d "$DOTFILES_ROOT/config/debian/$config_name" ]]; then
+        echo "debian"
+    elif [[ -d "$DOTFILES_ROOT/config/redhat/$config_name" ]]; then
+        echo "redhat"
+    elif [[ -f "$DOTFILES_ROOT/bin/$config_name" ]]; then
+        echo "bin"
+    else
+        echo ""
+    fi
+}
+
+validate_config_for_os() {
+    local config_name="$1"
+    local config_category="$2"
+    local detected_os="$3"
+
+    case "$config_category" in
+        universal|bin)
+            # Universal and bin configs work on all OS
+            return 0
+            ;;
+        linux)
+            # Linux configs only work on Linux distros
+            if [[ "$detected_os" =~ ^(arch|debian|redhat|linux)$ ]]; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        macos)
+            # macOS configs only work on macOS
+            if [[ "$detected_os" == "macos" ]]; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        arch|debian|redhat)
+            # Distro-specific configs work on their respective distros
+            if [[ "$detected_os" == "$config_category" ]]; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        *)
+            # Unknown category
+            return 1
+            ;;
+    esac
+}
+
+prompt_os_mismatch() {
+    local config_name="$1"
+    local config_category="$2"
+    local detected_os="$3"
+
+    local os_display
+    case "$config_category" in
+        linux) os_display="Linux" ;;
+        macos) os_display="macOS" ;;
+        arch) os_display="Arch Linux" ;;
+        debian) os_display="Debian/Ubuntu" ;;
+        redhat) os_display="Red Hat/CentOS/Fedora" ;;
+        *) os_display="$config_category" ;;
+    esac
+
+    local current_os_display
+    case "$detected_os" in
+        linux) current_os_display="Linux" ;;
+        macos) current_os_display="macOS" ;;
+        arch) current_os_display="Arch Linux" ;;
+        debian) current_os_display="Debian/Ubuntu" ;;
+        redhat) current_os_display="Red Hat/CentOS/Fedora" ;;
+        *) current_os_display="$detected_os" ;;
+    esac
+
+    log_warn "Configuration '$config_name' is meant for $os_display and you are currently on $current_os_display."
+    echo -n "Are you sure you want to install this? (y/N): "
+    read -r response
+
+    case "$response" in
+        [yY]|[yY][eE][sS])
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
 }
 
 handle_edit() {
     local config_name="$1"
-    
+
     # Check if EDITOR is set
     if [[ -z "$EDITOR" ]]; then
         log_error "\$EDITOR environment variable is not set"
@@ -488,17 +649,17 @@ handle_edit() {
         echo "Add this to your shell profile (~/.bashrc, ~/.zshrc, ~/.config/fish/config.fish)"
         exit 1
     fi
-    
+
     # If no config specified, open entire dotfiles directory
     if [[ -z "$config_name" ]]; then
         log_info "Opening dotfiles directory in $EDITOR..."
         exec "$EDITOR" "$DOTFILES_ROOT"
         return
     fi
-    
+
     local detected_os="$(detect_os)"
     local found_paths=($(find_config_path "$config_name" "$detected_os"))
-    
+
     if [[ ${#found_paths[@]} -eq 0 ]]; then
         log_error "Configuration '$config_name' not found"
         echo
@@ -522,7 +683,7 @@ handle_edit() {
         echo
         echo -n "Select configuration to edit (1-${#found_paths[@]}): "
         read -r selection
-        
+
         if [[ "$selection" =~ ^[0-9]+$ ]] && [[ "$selection" -ge 1 ]] && [[ "$selection" -le "${#found_paths[@]}" ]]; then
             local target_path="${found_paths[$((selection-1))]}"
             log_info "Opening selected configuration in $EDITOR..."

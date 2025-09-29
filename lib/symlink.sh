@@ -211,6 +211,36 @@ remove_single_config() {
     fi
 }
 
+create_single_config_symlink() {
+    local config_name="$1"
+    local config_category="$2"
+    local detected_os="$3"
+    
+    log_info "Installing configuration: $config_name ($config_category)"
+    
+    case "$config_category" in
+        universal)
+            auto_link_config "config/universal/$config_name" "$config_name"
+            ;;
+        linux)
+            auto_link_config "config/linux/$config_name" "$config_name"
+            ;;
+        macos)
+            auto_link_config "config/macos/$config_name" "$config_name"
+            ;;
+        arch|debian|redhat)
+            auto_link_config "config/$config_category/$config_name" "$config_name"
+            ;;
+        bin)
+            create_symlink "bin/$config_name" "$HOME/.local/bin/$config_name"
+            ;;
+        *)
+            log_error "Unknown config category: $config_category"
+            return 1
+            ;;
+    esac
+}
+
 clean_broken_symlinks() {
     log_info "Cleaning broken symlinks..."
     
