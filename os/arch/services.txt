@@ -1,0 +1,21 @@
+# Optional systemd services to enable
+# Uncomment the services you want to enable
+
+# Network management
+# NetworkManager
+
+# Bluetooth
+# bluetooth
+
+# Audio
+# pipewire
+# pipewire-pulse
+
+# Power management (for laptops)
+# tlp
+
+# Docker (if installed)
+# docker
+
+# SSH daemon
+# sshd

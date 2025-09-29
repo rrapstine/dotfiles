@@ -1,81 +1,172 @@
-## Introduction
+# OS-Agnostic Dotfiles
 
-This repository serves as my way to help me setup and maintain my Mac. It takes the effort out of installing everything manually. Everything needed to install my preferred setup of macOS is detailed in this readme. Feel free to explore, learn and copy parts for your own dotfiles. Enjoy!
+This repository contains my cross-platform dotfiles setup that works seamlessly across macOS and Arch Linux. It automatically detects your operating system and installs the appropriate packages and configurations, while providing a GNU stow-like symlink management system.
 
-📖 - [Read the blog post](https://driesvints.com/blog/getting-started-with-dotfiles)  
-📺 - [Watch the screencast on Laracasts](https://laracasts.com/series/guest-spotlight/episodes/1)  
-💡 - [Learn how to build your own dotfiles](https://github.com/driesvints/dotfiles#your-own-dotfiles)
+## ✨ Features
 
-## A Fresh macOS Setup
+- **🔍 Automatic OS Detection**: Detects macOS and Arch Linux automatically
+- **📦 Modular Package Management**: OS-specific package installation (Homebrew for macOS, pacman/AUR for Arch)
+- **🔗 Smart Symlinking**: GNU stow-like symlink management based on OS profiles
+- **⚙️ Organized Configuration**: Configs organized by application, not OS
+- **🛠️ Extensible**: Easy to add support for new operating systems
+- **🚀 One Command Setup**: Single command installation with multiple options
 
-These instructions are for when you've already set up your dotfiles. If you want to get started with your own dotfiles you can [find instructions below](#your-own-dotfiles).
+## 🚀 Quick Start
 
-### Before you re-install
-
-First, go through the checklist below to make sure you didn't forget anything before you wipe your hard drive.
-
-- Did you commit and push any changes/branches to your git repositories?
-- Did you remember to save all important documents from non-iCloud directories?
-- Did you save all of your work from apps which aren't synced through iCloud?
-- Did you remember to export important data from your local database?
-- Did you update [mackup](https://github.com/lra/mackup) to the latest version and ran `mackup backup`?
-
-### Installing macOS cleanly
-
-After going through our checklist above and making sure you backed everything up, we're going to cleanly install macOS with the latest release. Follow [this article](https://www.imore.com/how-do-clean-install-macos) to cleanly install the latest macOS version.
-
-### Setting up your Mac
-
-If you did all of the above you may now follow these install instructions to setup a new Mac.
-
-1. Update macOS to the latest version with the App Store
-2. [Generate a new public and private SSH key](https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) by running:
-
-   ```zsh
-   curl https://raw.githubusercontent.com/driesvints/dotfiles/HEAD/ssh.sh | sh -s "<your-email-address>"
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/rrapstine/dotfiles.git ~/.dotfiles
+   cd ~/.dotfiles
    ```
 
-3. Clone this repo to `~/.dotfiles` with:
+2. **Run the installer:**
+   ```bash
+   ./install.sh
+   ```
 
-    ```zsh
-    git clone git@github.com:driesvints/dotfiles.git ~/.dotfiles
-    ```
+That's it! The installer will:
+- Detect your OS automatically
+- Install the appropriate packages
+- Create symlinks for your configurations
+- Set up your development environment
 
-4. Run the installation with:
+## 📁 Repository Structure
 
-    ```zsh
-    ~/.dotfiles/fresh.sh
-    ```
-
-5. After mackup is synced with your cloud storage, restore preferences by running `mackup restore`
-6. Restart your computer to finalize the process
-
-Your Mac is now ready to use!
-
-> 💡 You can use a different location than `~/.dotfiles` if you want. Make sure you also update the reference in the [`.zshrc`](./.zshrc#L2) file.
-
-## Your Own Dotfiles
-
-**Please note that the instructions below assume you already have set up Oh My Zsh so make sure to first [install Oh My Zsh](https://github.com/robbyrussell/oh-my-zsh#getting-started) before you continue.**
-
-If you want to start with your own dotfiles from this setup, it's pretty easy to do so. First of all you'll need to fork this repo. After that you can tweak it the way you want.
-
-Go through the [`.macos`](./.macos) file and adjust the settings to your liking. You can find much more settings at [the original script by Mathias Bynens](https://github.com/mathiasbynens/dotfiles/blob/master/.macos) and [Kevin Suttle's macOS Defaults project](https://github.com/kevinSuttle/MacOS-Defaults).
-
-Check out the [`Brewfile`](./Brewfile) file and adjust the apps you want to install for your machine. Use [their search page](https://caskroom.github.io/search) to check if the app you want to install is available.
-
-Check out the [`aliases.zsh`](./aliases.zsh) file and add your own aliases. If you need to tweak your `$PATH` check out the [`path.zsh`](./path.zsh) file. These files get loaded in because the `$ZSH_CUSTOM` setting points to the `.dotfiles` directory. You can adjust the [`.zshrc`](./.zshrc) file to your liking to tweak your Oh My Zsh setup. More info about how to customize Oh My Zsh can be found [here](https://github.com/robbyrussell/oh-my-zsh/wiki/Customization).
-
-When installing these dotfiles for the first time you'll need to backup all of your settings with Mackup. Install Mackup and backup your settings with the commands below. Your settings will be synced to iCloud so you can use them to sync between computers and reinstall them when reinstalling your Mac. If you want to save your settings to a different directory or different storage than iCloud, [checkout the documentation](https://github.com/lra/mackup/blob/master/doc/README.md#storage). Also make sure your `.zshrc` file is symlinked from your dotfiles repo to your home directory. 
-
-```zsh
-brew install mackup
-mackup backup
+```
+dotfiles/
+├── install.sh              # Main installation script
+├── lib/                    # Utility libraries
+│   ├── detect.sh          # OS/architecture detection
+│   ├── package-managers.sh # Package manager abstractions
+│   ├── symlink.sh         # Symlink management
+│   └── utils.sh           # Common utilities
+├── os/                     # OS-specific configurations
+│   ├── macos/             # macOS specific files
+│   │   ├── install.sh     # macOS installation script
+│   │   ├── Brewfile       # Homebrew packages
+│   │   ├── defaults.sh    # macOS system preferences
+│   │   └── dock.sh        # Dock configuration
+│   └── arch/              # Arch Linux specific files
+│       ├── install.sh     # Arch installation script
+│       ├── packages.txt   # pacman/AUR packages
+│       └── services.txt   # systemd services
+├── config/                 # Application configurations
+│   ├── shell/             # Shell configs (zsh, fish)
+│   ├── terminal/          # Terminal emulators
+│   ├── editor/            # Editor configurations
+│   ├── tmux/              # Tmux configuration
+│   └── desktop/           # Desktop environment configs
+│       ├── macos/         # macOS specific (Aerospace, etc.)
+│       └── linux/         # Linux WM configs (Hyprland, etc.)
+└── profiles/               # OS-specific symlink profiles
+    ├── macos.conf         # macOS symlink mappings
+    └── arch.conf          # Arch Linux symlink mappings
 ```
 
-You can tweak the shell theme, the Oh My Zsh settings and much more. Go through the files in this repo and tweak everything to your liking.
+## 🛠️ Installation Options
 
-Enjoy your own Dotfiles!
+The installer supports several options for different use cases:
+
+```bash
+# Basic installation (auto-detects OS)
+./install.sh
+
+# Force specific OS
+./install.sh --os macos
+./install.sh --os arch
+
+# Only create symlinks (skip package installation)
+./install.sh --symlinks-only
+
+# Skip symlink creation
+./install.sh --no-symlinks
+
+# Preview what would be done
+./install.sh --dry-run
+
+# Show help
+./install.sh --help
+```
+
+## 🔧 Customization
+
+### Adding New Applications
+
+1. **Add the application config** to the appropriate directory in `config/`
+2. **Update the profile files** (`profiles/macos.conf` or `profiles/arch.conf`) to include symlink mappings
+3. **Add packages** to the OS-specific package files (`os/macos/Brewfile` or `os/arch/packages.txt`)
+
+### Adding New Operating Systems
+
+1. Create a new directory in `os/` (e.g., `os/ubuntu/`)
+2. Add an `install.sh` script for that OS
+3. Create package files specific to that OS
+4. Add OS detection logic to `lib/detect.sh`
+5. Create a profile file in `profiles/`
+
+### Profile Configuration Format
+
+Profiles use a simple `source=target` format:
+
+```bash
+# Example: profiles/macos.conf
+fish/config.fish=$HOME/.config/fish/config.fish
+config/terminal/kitty/kitty.conf=$HOME/.config/kitty/kitty.conf
+bin/ec=$HOME/.local/bin/ec
+```
+
+## 🎯 Supported Applications
+
+The dotfiles currently support configurations for:
+
+- **Shells**: Zsh, Fish
+- **Terminals**: Kitty, WezTerm
+- **Editors**: Neovim
+- **Multiplexers**: Tmux
+- **Development**: Git, various programming languages
+- **Desktop (macOS)**: Aerospace, SketchyBar, Dock
+- **Desktop (Linux)**: Hyprland, Waybar, Wofi (configurable)
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**SSH Key Issues**: If you encounter SSH authentication problems, the installer will guide you through setting up a new SSH key for GitHub.
+
+**Permission Errors**: Make sure all scripts are executable:
+```bash
+chmod +x install.sh lib/*.sh os/*/install.sh
+```
+
+**Symlink Conflicts**: Existing files will be backed up with a timestamp before creating symlinks.
+
+### Getting Help
+
+If you encounter issues:
+1. Run with `--dry-run` first to see what would happen
+2. Check the logs for specific error messages
+3. Ensure your OS is supported (macOS or Arch Linux)
+4. Make sure you have internet connectivity for package downloads
+
+## 🤝 Contributing
+
+Feel free to contribute by:
+- Adding support for new operating systems
+- Improving existing configurations
+- Fixing bugs or adding features
+- Updating documentation
+
+## 📝 Creating Your Own Dotfiles
+
+To create your own version:
+
+1. **Fork this repository**
+2. **Customize the configurations** in the `config/` directory
+3. **Update package lists** in `os/*/` directories
+4. **Modify profiles** in `profiles/` to match your setup
+5. **Adjust OS-specific scripts** as needed
+
+The modular structure makes it easy to add, remove, or modify components without affecting the core functionality.
 
 ## Thanks To...
 
