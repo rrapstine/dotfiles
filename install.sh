@@ -13,8 +13,8 @@ source "$DOTFILES_ROOT/lib/symlink.sh"
 
 print_banner() {
     echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                    Dotfiles Installation                    ║"
-    echo "║                     OS-Agnostic Setup                       ║"
+    echo "║                    Dotfiles Installation                     ║"
+    echo "║                     OS-Agnostic Setup                        ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
     echo
 }
@@ -44,7 +44,7 @@ main() {
     local symlinks_only=false
     local no_symlinks=false
     local dry_run=false
-    
+
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -75,9 +75,9 @@ main() {
                 ;;
         esac
     done
-    
+
     print_banner
-    
+
     # Detect or use forced OS
     local detected_os
     if [[ -n "$forced_os" ]]; then
@@ -87,10 +87,10 @@ main() {
         detected_os="$(detect_os)"
         log_info "Detected OS: $detected_os"
     fi
-    
+
     local architecture="$(detect_architecture)"
     log_info "Detected architecture: $architecture"
-    
+
     # Validate OS support
     case "$detected_os" in
         macos|arch)
@@ -102,19 +102,19 @@ main() {
             exit 1
             ;;
     esac
-    
+
     if [[ "$dry_run" == true ]]; then
         log_warn "DRY RUN MODE - No changes will be made"
         echo
     fi
-    
+
     # Check if OS-specific installer exists
     local os_installer="$DOTFILES_ROOT/os/$detected_os/install.sh"
     if [[ ! -f "$os_installer" ]]; then
         log_error "OS installer not found: $os_installer"
         exit 1
     fi
-    
+
     # Run OS-specific installation (unless symlinks-only)
     if [[ "$symlinks_only" != true ]]; then
         if [[ "$dry_run" == true ]]; then
@@ -124,7 +124,7 @@ main() {
             source "$os_installer"
         fi
     fi
-    
+
     # Create symlinks (unless disabled)
     if [[ "$no_symlinks" != true ]]; then
         if [[ "$dry_run" == true ]]; then
@@ -138,7 +138,7 @@ main() {
                     echo "    $DOTFILES_ROOT/bin/$script_name -> $HOME/.local/bin/$script_name"
                 done
             fi
-            
+
             echo "  Config files:"
             if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
                 for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
@@ -147,7 +147,7 @@ main() {
                     echo "    $DOTFILES_ROOT/config/universal/$config_name -> $HOME/.config/$config_name"
                 done
             fi
-            
+
             local os_config_dir="$DOTFILES_ROOT/config/$detected_os"
             if [[ -d "$os_config_dir" ]]; then
                 for config_dir in "$os_config_dir"/*; do
@@ -156,11 +156,23 @@ main() {
                     echo "    $DOTFILES_ROOT/config/$detected_os/$config_name -> $HOME/.config/$config_name"
                 done
             fi
+
+            # Show Linux configs for Linux distros
+            if [[ "$detected_os" =~ ^(arch|debian|redhat|linux)$ ]]; then
+                local linux_config_dir="$DOTFILES_ROOT/config/linux"
+                if [[ -d "$linux_config_dir" ]]; then
+                    for config_dir in "$linux_config_dir"/*; do
+                        [[ -d "$config_dir" ]] || continue
+                        local config_name="$(basename "$config_dir")"
+                        echo "    $DOTFILES_ROOT/config/linux/$config_name -> $HOME/.config/$config_name"
+                    done
+                fi
+            fi
         else
             create_symlinks "$detected_os"
         fi
     fi
-    
+
     if [[ "$dry_run" != true ]]; then
         echo
         log_success "Installation completed successfully!"

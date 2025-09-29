@@ -39,6 +39,18 @@ create_symlinks() {
             auto_link_config "config/$os/$config_name" "$config_name"
         done
     fi
+
+    # Link shared Linux configs for any Linux distro
+    if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
+        local linux_config_dir="$DOTFILES_ROOT/config/linux"
+        if [[ -d "$linux_config_dir" ]]; then
+            for config_dir in "$linux_config_dir"/*; do
+                [[ -d "$config_dir" ]] || continue
+                local config_name="$(basename "$config_dir")"
+                auto_link_config "config/linux/$config_name" "$config_name"
+            done
+        fi
+    fi
 }
 
 create_symlink() {
@@ -145,5 +157,21 @@ remove_symlinks() {
                 rm "$target"
             fi
         done
+    fi
+
+    # Remove shared Linux configs
+    if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
+        local linux_config_dir="$DOTFILES_ROOT/config/linux"
+        if [[ -d "$linux_config_dir" ]]; then
+            for config_dir in "$linux_config_dir"/*; do
+                [[ -d "$config_dir" ]] || continue
+                local config_name="$(basename "$config_dir")"
+                local target="$HOME/.config/$config_name"
+                if [[ -L "$target" ]]; then
+                    log_info "Removing symlink: $target"
+                    rm "$target"
+                fi
+            done
+        fi
     fi
 }
