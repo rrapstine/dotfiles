@@ -1,13 +1,13 @@
 # OS-Agnostic Dotfiles
 
-This repository contains my cross-platform dotfiles setup that works seamlessly across macOS and Arch Linux. It automatically detects your operating system and installs the appropriate packages and configurations, while providing a GNU stow-like symlink management system.
+This repository contains my cross-platform dotfiles setup that works seamlessly across macOS and Arch Linux. It automatically detects my operating system and installs the appropriate packages and configurations, while providing a GNU stow-like symlink management system.
 
 ## ✨ Features
 
 - **🔍 Automatic OS Detection**: Detects macOS and Arch Linux automatically
 - **📦 Modular Package Management**: OS-specific package installation (Homebrew for macOS, pacman/AUR for Arch)
 - **🔗 Smart Symlinking**: GNU stow-like symlink management based on OS profiles
-- **⚙️ Organized Configuration**: Configs organized by application, not OS
+- **⚙️ Organized Configuration**: Configs are either universal or OS-specific
 - **🛠️ Extensible**: Easy to add support for new operating systems
 - **🚀 One Command Setup**: Single command installation with multiple options
 
@@ -21,47 +21,15 @@ This repository contains my cross-platform dotfiles setup that works seamlessly 
 
 2. **Run the installer:**
    ```bash
+   sudo chmod +x install.sh
    ./install.sh
    ```
 
 That's it! The installer will:
-- Detect your OS automatically
-- Install the appropriate packages
-- Create symlinks for your configurations
-- Set up your development environment
-
-## 📁 Repository Structure
-
-```
-dotfiles/
-├── install.sh              # Main installation script
-├── lib/                    # Utility libraries
-│   ├── detect.sh          # OS/architecture detection
-│   ├── package-managers.sh # Package manager abstractions
-│   ├── symlink.sh         # Symlink management
-│   └── utils.sh           # Common utilities
-├── os/                     # OS-specific configurations
-│   ├── macos/             # macOS specific files
-│   │   ├── install.sh     # macOS installation script
-│   │   ├── Brewfile       # Homebrew packages
-│   │   ├── defaults.sh    # macOS system preferences
-│   │   └── dock.sh        # Dock configuration
-│   └── arch/              # Arch Linux specific files
-│       ├── install.sh     # Arch installation script
-│       ├── packages.txt   # pacman/AUR packages
-│       └── services.txt   # systemd services
-├── config/                 # Application configurations
-│   ├── shell/             # Shell configs (zsh, fish)
-│   ├── terminal/          # Terminal emulators
-│   ├── editor/            # Editor configurations
-│   ├── tmux/              # Tmux configuration
-│   └── desktop/           # Desktop environment configs
-│       ├── macos/         # macOS specific (Aerospace, etc.)
-│       └── linux/         # Linux WM configs (Hyprland, etc.)
-└── profiles/               # OS-specific symlink profiles
-    ├── macos.conf         # macOS symlink mappings
-    └── arch.conf          # Arch Linux symlink mappings
-```
+- Detect the OS automatically
+- Install the listed packages
+- Create symlinks for available configurations
+- Set OS environment variables (MacOS only)
 
 ## 🛠️ Installation Options
 
@@ -93,8 +61,8 @@ The installer supports several options for different use cases:
 ### Adding New Applications
 
 1. **Add the application config** to the appropriate directory in `config/`
-2. **Update the profile files** (`profiles/macos.conf` or `profiles/arch.conf`) to include symlink mappings
 3. **Add packages** to the OS-specific package files (`os/macos/Brewfile` or `os/arch/packages.txt`)
+2. **Update the profile files** (`profiles/macos.conf` or `profiles/arch.conf`) to include symlink mappings (optional)
 
 ### Adding New Operating Systems
 
@@ -106,26 +74,15 @@ The installer supports several options for different use cases:
 
 ### Profile Configuration Format
 
+In the event that automatic detection will not work for your environment, you can create OS specific profiles which direct the script where to place your configs and scripts.
 Profiles use a simple `source=target` format:
 
 ```bash
 # Example: profiles/macos.conf
 fish/config.fish=$HOME/.config/fish/config.fish
-config/terminal/kitty/kitty.conf=$HOME/.config/kitty/kitty.conf
+config/kitty/kitty.conf=$HOME/.config/kitty/kitty.conf
 bin/ec=$HOME/.local/bin/ec
 ```
-
-## 🎯 Supported Applications
-
-The dotfiles currently support configurations for:
-
-- **Shells**: Zsh, Fish
-- **Terminals**: Kitty, WezTerm
-- **Editors**: Neovim
-- **Multiplexers**: Tmux
-- **Development**: Git, various programming languages
-- **Desktop (macOS)**: Aerospace, SketchyBar, Dock
-- **Desktop (Linux)**: Hyprland, Waybar, Wofi (configurable)
 
 ## 🐛 Troubleshooting
 
@@ -148,14 +105,6 @@ If you encounter issues:
 3. Ensure your OS is supported (macOS or Arch Linux)
 4. Make sure you have internet connectivity for package downloads
 
-## 🤝 Contributing
-
-Feel free to contribute by:
-- Adding support for new operating systems
-- Improving existing configurations
-- Fixing bugs or adding features
-- Updating documentation
-
 ## 📝 Creating Your Own Dotfiles
 
 To create your own version:
@@ -170,6 +119,6 @@ The modular structure makes it easy to add, remove, or modify components without
 
 ## Thanks To...
 
-I first got the idea for starting this project by visiting the [GitHub does dotfiles](https://dotfiles.github.io/) project. Both [Zach Holman](https://github.com/holman/dotfiles) and [Mathias Bynens](https://github.com/mathiasbynens/dotfiles) were great sources of inspiration. [Sourabh Bajaj](https://twitter.com/sb2nov/)'s [Mac OS X Setup Guide](http://sourabhbajaj.com/mac-setup/) proved to be invaluable. Thanks to [@subnixr](https://github.com/subnixr) for [his awesome Zsh theme](https://github.com/subnixr/minimal)! Thanks to [Caneco](https://twitter.com/caneco) for the header in this readme. And lastly, I'd like to thank [Emma Fabre](https://twitter.com/anahkiasen) for [her excellent presentation on Homebrew](https://speakerdeck.com/anahkiasen/a-storm-homebrewin) which made me migrate a lot to a [`Brewfile`](./Brewfile) and [Mackup](https://github.com/lra/mackup).
+I first got the idea for starting this project by visiting the [GitHub does dotfiles](https://dotfiles.github.io/) project. Both [Zach Holman](https://github.com/holman/dotfiles) and [Mathias Bynens](https://github.com/mathiasbynens/dotfiles) were great sources of inspiration. Also, I'd like to thank [Emma Fabre](https://twitter.com/anahkiasen) for [her excellent presentation on Homebrew](https://speakerdeck.com/anahkiasen/a-storm-homebrewin) which made me migrate a lot to a [`Brewfile`](./Brewfile) and [Mackup](https://github.com/lra/mackup).
 
 In general, I'd like to thank every single one who open-sources their dotfiles for their effort to contribute something to the open-source community.
