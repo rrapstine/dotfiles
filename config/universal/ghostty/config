@@ -1,0 +1,11 @@
+clipboard-read = allow
+clipboard-write = allow
+copy-on-select = true
+window-theme = ghostty
+window-padding-x = 10
+theme = Catppuccin Mocha
+bold-is-bright = true
+font-size = 15
+font-family = Iosevka Nerd Font
+adjust-cell-height = 50%
+gtk-wide-tabs = false

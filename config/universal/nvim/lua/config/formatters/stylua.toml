@@ -1,0 +1,20 @@
+# ~/.config/nvim/lua/config/formatting/stylua.toml
+
+# Max line width
+column_width = 160
+
+# Use Unix (LF) line endings
+line_endings = "Unix"
+
+# Indent with spaces, width = 2
+indent_type = "Spaces"
+indent_width = 2
+
+# Prefer single quotes for code strings
+quote_style = "ForceSingle"
+
+# Always keep parentheses on function calls
+call_parentheses = "Always"
+
+# Never collapse simple single-line statements
+collapse_simple_statement = "Never"

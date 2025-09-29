@@ -1,0 +1,66 @@
+{
+	// Use Biome’s official JSON schema (adjust version if needed)
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+
+	/*──────────────────────────────────────────────────────
+	 * 1) Global formatter settings (applies to all filetypes)
+	 *──────────────────────────────────────────────────────
+	 */
+	"formatter": {
+		// Enable formatting (true is default, but specified for clarity)
+		"enabled": true,
+
+		// Don’t error-out on syntax errors; just format what you can
+		"formatWithErrors": false,
+
+		// Use spaces (not tabs) for indentation
+		"indentStyle": "space",
+
+		// Two spaces per indentation level
+		"indentWidth": 2,
+
+		// Wrap lines at 160 characters (instead of the default 80)
+		"lineWidth": 160,
+
+		// Use Unix‐style line endings (LF)
+		"lineEnding": "lf"
+	},
+
+	/*──────────────────────────────────────────────────────
+	 * 2) JavaScript‐specific overrides
+	 *──────────────────────────────────────────────────────
+	 */
+	"javascript": {
+		"formatter": {
+			// Use single quotes by default
+			"quoteStyle": "single",
+
+			// Always include semicolons
+			"semicolons": "always",
+
+			// Print trailing commas where ES5 allows (arrays, objects, function args)
+			"trailingCommas": "es5",
+
+			// Put a space between brackets: { a: 1 } instead of {a:1}
+			"bracketSpacing": true,
+
+			// Always include parentheses around arrow-function arguments
+			"arrowParentheses": "always"
+		}
+	},
+
+	/*──────────────────────────────────────────────────────
+	 * 3) JSON‐specific overrides
+	 *──────────────────────────────────────────────────────
+	 */
+	"json": {
+		"formatter": {
+			// Use spaces and 2‐space indent in JSON (Prettier‐style)
+			"indentStyle": "space",
+			"indentWidth": 2,
+
+			// Never add trailing commas in JSON
+			"trailingCommas": "none"
+		}
+	}
+}
