@@ -1,6 +1,3 @@
-# Load dotfiles binaries
-add_path "$DOTFILES/bin"
-
 if test (uname) = Darwin
     # Load Homebrew binaries
     add_path /opt/homebrew/bin
