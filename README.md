@@ -9,6 +9,8 @@ This repository contains my cross-platform dotfiles setup that works seamlessly 
 - **🔗 Smart Symlinking**: Automatic symlink discovery and management based on directory structure
 - **⚙️ Organized Configuration**: Universal, OS-specific, and Linux-specific configurations
 - **🛠️ Extensible CLI**: Comprehensive `dotfiles` command with subcommands for all operations
+- **🎯 Selective Installation**: Install individual configurations or everything at once
+- **⚠️ OS Mismatch Detection**: Smart warnings when installing OS-specific configs on different platforms
 - **🎯 Quick Editing**: Built-in editor integration for rapid config modifications
 - **🧹 Maintenance Tools**: Clean broken symlinks, remove configurations, status reporting
 - **🚀 One Command Setup**: Single command installation with multiple options
@@ -48,9 +50,12 @@ After initial setup, use the `dotfiles` command for all operations:
 ### Core Commands
 ```bash
 # Installation & Setup
-dotfiles install                    # Full installation
-dotfiles install --os arch          # Force specific OS
-dotfiles install --symlinks-only    # Only create symlinks
+dotfiles install                    # Full installation (all configurations)
+dotfiles install hypr               # Install only hypr configuration
+dotfiles install nvim               # Install only nvim configuration
+dotfiles install fish --os arch     # Install fish with forced OS
+dotfiles install --os arch          # Force specific OS for full install
+dotfiles install --symlinks-only    # Only create symlinks (skip packages)
 dotfiles install --dry-run          # Preview changes
 
 # Configuration Management
@@ -113,6 +118,12 @@ dotfiles/
 
 3. **The symlinks are created automatically** based on directory structure - no manual configuration needed!
 
+4. **Test your new config** with selective installation:
+   ```bash
+   dotfiles install myapp --dry-run    # Preview the installation
+   dotfiles install myapp              # Install just your new config
+   ```
+
 ### Adding New Operating Systems
 
 1. Create a new directory in `os/` (e.g., `os/ubuntu/`)
@@ -124,6 +135,32 @@ dotfiles/
 The symlink system will automatically discover and link configurations!
 
 ## 🎯 Key Features in Detail
+
+### Selective Installation
+Install specific configurations instead of everything at once:
+
+```bash
+# Install individual configurations
+dotfiles install hypr               # Hyprland window manager
+dotfiles install fish               # Fish shell only
+dotfiles install nvim               # Neovim configuration
+dotfiles install waybar             # Waybar status bar
+
+# Cross-platform safety
+dotfiles install hypr --os macos    # Warns: hypr is for Linux, you're on macOS
+                                    # Prompts: "Are you sure? (y/N)"
+
+# Combine with other options
+dotfiles install nvim --dry-run     # Preview nvim installation
+dotfiles install fish --symlinks-only  # Install fish symlinks only
+```
+
+**Features:**
+- **Intelligent Discovery**: Automatically finds configs in universal, OS-specific, and Linux directories
+- **OS Validation**: Warns when installing OS-specific configs on incompatible systems
+- **Interactive Prompts**: Asks for confirmation on potential mismatches
+- **Error Handling**: Clear messages for non-existent configurations with available options
+- **Backward Compatible**: Original `dotfiles install` (install everything) still works
 
 ### Smart Editor Integration
 ```bash
@@ -168,14 +205,31 @@ chmod +x install.sh bin/* lib/*.sh os/*/install.sh
 dotfiles clean                      # Remove all broken symlinks
 ```
 
+### Installation Scenarios
+
+**Installing Linux configs on macOS/other OS:**
+- The system will warn you and ask for confirmation
+- This allows for testing configs or manual cross-platform setups
+- Example: Installing waybar on macOS won't work but won't break anything
+
+**Configuration not found:**
+- Use `dotfiles list` to see all available configurations
+- Check spelling and try again
+- Use `dotfiles help install` for usage examples
+
+**Multiple arguments:**
+- Only one configuration name is allowed per install command
+- Run multiple commands for multiple configs: `dotfiles install nvim && dotfiles install fish`
+
 ### Getting Help
 
 If you encounter issues:
 1. Use `dotfiles status` to see current state
 2. Run `dotfiles install --dry-run` to preview changes
-3. Check `dotfiles help [command]` for specific command help
-4. Ensure your OS is supported (macOS or Arch Linux)
-5. Verify internet connectivity for package downloads
+3. Use `dotfiles list` to see available configurations
+4. Check `dotfiles help [command]` for specific command help
+5. Ensure your OS is supported (macOS or Arch Linux)
+6. Verify internet connectivity for package downloads
 
 ## 📝 Creating Your Own Dotfiles
 
