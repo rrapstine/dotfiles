@@ -1,4 +1,4 @@
-#!/bin/bash#
+#!/bin/bash
 # =============================================================================
 # Script Name : tp (Tmux Project Launcher)
 # Description : Fuzzy-find a project and attach to or create a tmux session
