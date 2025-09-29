@@ -10,18 +10,18 @@
 CODE_DIR="$HOME/Code"
 SPECIAL_DIRS=("dotfiles" "scripts")  # Add more special dirs here as needed
 
-# Build exclusion pattern for find
-exclude_pattern=""
+# Build exclusion arguments for find
+exclude_args=()
 for special in "${SPECIAL_DIRS[@]}"; do
-  if [ -n "$exclude_pattern" ]; then
-    exclude_pattern="$exclude_pattern -o"
+  if [ ${#exclude_args[@]} -gt 0 ]; then
+    exclude_args+=("-o")
   fi
-  exclude_pattern="$exclude_pattern -path $CODE_DIR/$special"
+  exclude_args+=("-path" "$CODE_DIR/$special/*")
 done
 
 # Find regular projects (2 levels deep), excluding special directories
-if [ -n "$exclude_pattern" ]; then
-  projects=($(find "$CODE_DIR" -mindepth 2 -maxdepth 2 -type d \( $exclude_pattern \) -prune -o -type d -print))
+if [ ${#exclude_args[@]} -gt 0 ]; then
+  projects=($(find "$CODE_DIR" -mindepth 2 -maxdepth 2 -type d \( "${exclude_args[@]}" \) -prune -o -type d -print))
 else
   projects=($(find "$CODE_DIR" -mindepth 2 -maxdepth 2 -type d))
 fi
