@@ -127,25 +127,37 @@ main() {
     
     # Create symlinks (unless disabled)
     if [[ "$no_symlinks" != true ]]; then
-        local profile_file="$DOTFILES_ROOT/profiles/$detected_os.conf"
-        
-        if [[ ! -f "$profile_file" ]]; then
-            log_error "Profile file not found: $profile_file"
-            exit 1
-        fi
-        
         if [[ "$dry_run" == true ]]; then
-            log_info "Would create symlinks based on: $profile_file"
+            log_info "Would auto-discover and create symlinks for OS: $detected_os"
             # Show what symlinks would be created
-            while IFS='=' read -r source target || [[ -n "$source" ]]; do
-                [[ -z "$source" || "$source" =~ ^#.* ]] && continue
-                source=$(echo "$source" | xargs)
-                target=$(echo "$target" | xargs)
-                target="${target/\$HOME/$HOME}"
-                echo "  $DOTFILES_ROOT/$source -> $target"
-            done < <(grep -E "^[^#].*=" "$profile_file" 2>/dev/null || true)
+            echo "  Bin scripts:"
+            if [[ -d "$DOTFILES_ROOT/bin" ]]; then
+                for script in "$DOTFILES_ROOT/bin"/*; do
+                    [[ -f "$script" ]] || continue
+                    local script_name="$(basename "$script")"
+                    echo "    $DOTFILES_ROOT/bin/$script_name -> $HOME/.local/bin/$script_name"
+                done
+            fi
+            
+            echo "  Config files:"
+            if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
+                for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
+                    [[ -d "$config_dir" ]] || continue
+                    local config_name="$(basename "$config_dir")"
+                    echo "    $DOTFILES_ROOT/config/universal/$config_name -> $HOME/.config/$config_name"
+                done
+            fi
+            
+            local os_config_dir="$DOTFILES_ROOT/config/$detected_os"
+            if [[ -d "$os_config_dir" ]]; then
+                for config_dir in "$os_config_dir"/*; do
+                    [[ -d "$config_dir" ]] || continue
+                    local config_name="$(basename "$config_dir")"
+                    echo "    $DOTFILES_ROOT/config/$detected_os/$config_name -> $HOME/.config/$config_name"
+                done
+            fi
         else
-            create_symlinks "$profile_file" "$detected_os"
+            create_symlinks "$detected_os"
         fi
     fi
     

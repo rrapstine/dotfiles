@@ -7,45 +7,37 @@ source "$(dirname "${BASH_SOURCE[0]}")/detect.sh"
 DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 create_symlinks() {
-    local profile_file="$1"
-    local os="$2"
+    local os="$1"
 
-    if [[ -n "$profile_file" && -f "$profile_file" ]]; then
-        log_info "Creating symlinks based on $profile_file"
+    log_info "Auto-discovering configs and scripts for OS: $os"
 
-        # Parse profile file format
-        while IFS='=' read -r source target || [[ -n "$source" ]]; do
-            # Skip empty lines and comments
-            [[ -z "$source" || "$source" =~ ^#.* ]] && continue
+    # Auto-discover bin scripts
+    if [[ -d "$DOTFILES_ROOT/bin" ]]; then
+        log_info "Auto-discovering bin scripts..."
+        for script in "$DOTFILES_ROOT/bin"/*; do
+            [[ -f "$script" ]] || continue
+            local script_name="$(basename "$script")"
+            create_symlink "bin/$script_name" "$HOME/.local/bin/$script_name"
+        done
+    fi
 
-            # Remove any leading/trailing whitespace
-            source=$(echo "$source" | xargs)
-            target=$(echo "$target" | xargs)
+    # Link universal configs (always)
+    if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
+        for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            auto_link_config "config/universal/$config_name" "$config_name"
+        done
+    fi
 
-            create_symlink "$source" "$target"
-        done < <(grep -E "^[^#].*=" "$profile_file" 2>/dev/null || true)
-    else
-        # Auto-discover based on OS
-        log_info "Auto-discovering configs for OS: $os"
-
-        # Link universal configs (always)
-        if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
-            for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
-                [[ -d "$config_dir" ]] || continue
-                local config_name="$(basename "$config_dir")"
-                auto_link_config "config/universal/$config_name" "$config_name"
-            done
-        fi
-
-        # Link OS-specific configs
-        local os_config_dir="$DOTFILES_ROOT/config/$os"
-        if [[ -d "$os_config_dir" ]]; then
-            for config_dir in "$os_config_dir"/*; do
-                [[ -d "$config_dir" ]] || continue
-                local config_name="$(basename "$config_dir")"
-                auto_link_config "config/$os/$config_name" "$config_name"
-            done
-        fi
+    # Link OS-specific configs
+    local os_config_dir="$DOTFILES_ROOT/config/$os"
+    if [[ -d "$os_config_dir" ]]; then
+        for config_dir in "$os_config_dir"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            auto_link_config "config/$os/$config_name" "$config_name"
+        done
     fi
 }
 
@@ -111,29 +103,47 @@ backup_existing_file() {
 }
 
 remove_symlinks() {
-    local profile_file="$1"
+    local os="$1"
 
-    log_info "Removing symlinks based on $profile_file"
+    log_info "Removing auto-discovered symlinks for OS: $os"
 
-    if [[ ! -f "$profile_file" ]]; then
-        log_error "Profile file not found: $profile_file"
-        return 1
+    # Remove bin scripts
+    if [[ -d "$DOTFILES_ROOT/bin" ]]; then
+        for script in "$DOTFILES_ROOT/bin"/*; do
+            [[ -f "$script" ]] || continue
+            local script_name="$(basename "$script")"
+            local target="$HOME/.local/bin/$script_name"
+            if [[ -L "$target" ]]; then
+                log_info "Removing symlink: $target"
+                rm "$target"
+            fi
+        done
     fi
 
-    while IFS='=' read -r source target || [[ -n "$source" ]]; do
-        # Skip empty lines and comments
-        [[ -z "$source" || "$source" =~ ^#.* ]] && continue
+    # Remove universal configs
+    if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
+        for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            local target="$HOME/.config/$config_name"
+            if [[ -L "$target" ]]; then
+                log_info "Removing symlink: $target"
+                rm "$target"
+            fi
+        done
+    fi
 
-        # Remove any leading/trailing whitespace
-        target=$(echo "$target" | xargs)
-
-        # Expand variables
-        target="${target/\$HOME/$HOME}"
-        target="${target/\~/$HOME}"
-
-        if [[ -L "$target" ]]; then
-            log_info "Removing symlink: $target"
-            rm "$target"
-        fi
-    done < <(grep -E "^[^#].*=" "$profile_file" 2>/dev/null || true)
+    # Remove OS-specific configs
+    local os_config_dir="$DOTFILES_ROOT/config/$os"
+    if [[ -d "$os_config_dir" ]]; then
+        for config_dir in "$os_config_dir"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            local target="$HOME/.config/$config_name"
+            if [[ -L "$target" ]]; then
+                log_info "Removing symlink: $target"
+                rm "$target"
+            fi
+        done
+    fi
 }
