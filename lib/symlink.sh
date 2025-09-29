@@ -98,40 +98,18 @@ auto_link_config() {
     local source="$1"
     local config_name="$2"
     
-    # Define common config paths based on application
+    # ALL configs go in $HOME/.config for consistency across operating systems
     case "$config_name" in
-        "fish")
-            create_symlink "$source" "$HOME/.config/fish"
-            ;;
         "tmux")
-            create_symlink "$source/tmux.conf" "$HOME/.tmux.conf"
-            ;;
-        "nvim")
-            create_symlink "$source" "$HOME/.config/nvim"
-            ;;
-        "kitty")
-            create_symlink "$source" "$HOME/.config/kitty"
-            ;;
-        "ghostty")
-            create_symlink "$source" "$HOME/.config/ghostty"
+            # tmux config file goes directly in .config/tmux/
+            create_symlink "$source/tmux.conf" "$HOME/.config/tmux/tmux.conf"
             ;;
         "git")
-            create_symlink "$source/.gitignore_global" "$HOME/.gitignore_global"
-            ;;
-        "hypr")
-            create_symlink "$source" "$HOME/.config/hypr"
-            ;;
-        "waybar")
-            create_symlink "$source" "$HOME/.config/waybar"
-            ;;
-        "wlogout")
-            create_symlink "$source" "$HOME/.config/wlogout"
-            ;;
-        "wofi")
-            create_symlink "$source" "$HOME/.config/wofi"
+            # Git config files go in .config/git/ (XDG compliant)
+            create_symlink "$source" "$HOME/.config/git"
             ;;
         "hardware")
-            # Link hardware configs to system locations (may need sudo)
+            # Hardware configs - link individual subdirectories
             if [[ -d "$DOTFILES_ROOT/$source/openrazer" ]]; then
                 create_symlink "$source/openrazer" "$HOME/.config/openrazer"
             fi
@@ -140,7 +118,7 @@ auto_link_config() {
             fi
             ;;
         *)
-            # Default: link to ~/.config/<name>
+            # Default: ALL configs go to ~/.config/<name>
             create_symlink "$source" "$HOME/.config/$config_name"
             ;;
     esac

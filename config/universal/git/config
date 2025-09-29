@@ -1,0 +1,23 @@
+[user]
+	name = Richard F Rapstine III
+	email = richard.rapstine@gmail.com
+
+[init]
+	defaultBranch = main
+
+[core]
+	excludesFile = ~/.config/git/ignore
+
+[pull]
+	rebase = false
+
+[push]
+	default = simple
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	df = diff
+	lg = log --oneline --graph --decorate --all
