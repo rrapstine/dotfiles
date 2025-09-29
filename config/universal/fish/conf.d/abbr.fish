@@ -10,15 +10,6 @@ abbr -a .. 'cd ..'
 abbr -a nuke 'rm -rf'
 abbr -a clear 'clear && ls'
 
-# Edit configs
-abbr -a fconfig 'cd $CONFIG/fish/ && nvim .' # Fish config
-abbr -a hconfig 'cd $CONFIG/hypr && nvim .' # Hyprland config
-abbr -a vimconfig 'cd $CONFIG/nvim/ && nvim .' # Neovim config
-
-# Directory shortcuts
-abbr -a dotfiles 'cd $DOTFILES'
-abbr -a work 'cd $HOME/Code'
-
 # Git shortcuts
 abbr -a gs 'git status'
 abbr -a ga 'git add'

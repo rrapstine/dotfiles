@@ -6,7 +6,7 @@ set -q LC_ALL; or set -Ux LC_ALL en_US.UTF-8
 set -q LANG; or set -Ux LANG en_US.UTF-8
 
 # Editor
-set -q EDITOR; or set -Ux EDITOR neovim
+set -q EDITOR; or set -Ux EDITOR nvim
 
 # Paths
 set -q CONFIG; or set -Ux CONFIG "$HOME/.config"
