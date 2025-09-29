@@ -1,14 +1,16 @@
 # OS-Agnostic Dotfiles
 
-This repository contains my cross-platform dotfiles setup that works seamlessly across macOS and Arch Linux. It automatically detects my operating system and installs the appropriate packages and configurations, while providing a GNU stow-like symlink management system.
+This repository contains my cross-platform dotfiles setup that works seamlessly across macOS and Arch Linux. It features a comprehensive CLI tool for managing configurations, with automatic OS detection and intelligent symlink management.
 
 ## ✨ Features
 
 - **🔍 Automatic OS Detection**: Detects macOS and Arch Linux automatically
 - **📦 Modular Package Management**: OS-specific package installation (Homebrew for macOS, pacman/AUR for Arch)
-- **🔗 Smart Symlinking**: GNU stow-like symlink management based on OS profiles
-- **⚙️ Organized Configuration**: Configs are either universal or OS-specific
-- **🛠️ Extensible**: Easy to add support for new operating systems
+- **🔗 Smart Symlinking**: Automatic symlink discovery and management based on directory structure
+- **⚙️ Organized Configuration**: Universal, OS-specific, and Linux-specific configurations
+- **🛠️ Extensible CLI**: Comprehensive `dotfiles` command with subcommands for all operations
+- **🎯 Quick Editing**: Built-in editor integration for rapid config modifications
+- **🧹 Maintenance Tools**: Clean broken symlinks, remove configurations, status reporting
 - **🚀 One Command Setup**: Single command installation with multiple options
 
 ## 🚀 Quick Start
@@ -19,50 +21,97 @@ This repository contains my cross-platform dotfiles setup that works seamlessly 
    cd ~/.dotfiles
    ```
 
-2. **Run the installer:**
+2. **Run the initial setup:**
    ```bash
-   sudo chmod +x install.sh
+   chmod +x install.sh
    ./install.sh
    ```
 
-That's it! The installer will:
-- Detect the OS automatically
-- Install the listed packages
-- Create symlinks for available configurations
-- Set OS environment variables (MacOS only)
+3. **Use the dotfiles CLI for ongoing management:**
+   ```bash
+   dotfiles status    # Check current setup
+   dotfiles edit nvim # Edit configurations
+   dotfiles help      # See all commands
+   ```
 
-## 🛠️ Installation Options
+The initial setup will:
+- Detect your OS automatically
+- Install the `dotfiles` CLI tool
+- Install OS-specific packages
+- Create symlinks for all available configurations
+- Set up your development environment
 
-The installer supports several options for different use cases:
+## 🛠️ CLI Commands
+
+After initial setup, use the `dotfiles` command for all operations:
+
+### Core Commands
+```bash
+# Installation & Setup
+dotfiles install                    # Full installation
+dotfiles install --os arch          # Force specific OS
+dotfiles install --symlinks-only    # Only create symlinks
+dotfiles install --dry-run          # Preview changes
+
+# Configuration Management
+dotfiles edit                       # Open dotfiles directory in $EDITOR
+dotfiles edit nvim                  # Edit specific config (nvim, fish, etc.)
+dotfiles edit hypr                  # Edit hyprland config
+dotfiles remove nvim                # Remove specific config symlinks
+dotfiles remove all                 # Remove all dotfiles symlinks
+
+# Maintenance & Information
+dotfiles status                     # Show current symlink status
+dotfiles list                       # Show available configurations
+dotfiles clean                      # Remove broken symlinks
+dotfiles help [command]             # Show help for specific command
+```
+
+### Initial Setup Options
+The `install.sh` script supports these options for first-time setup:
 
 ```bash
-# Basic installation (auto-detects OS)
-./install.sh
-
-# Force specific OS
-./install.sh --os macos
-./install.sh --os arch
-
-# Only create symlinks (skip package installation)
-./install.sh --symlinks-only
-
-# Skip symlink creation
-./install.sh --no-symlinks
-
-# Preview what would be done
-./install.sh --dry-run
-
-# Show help
-./install.sh --help
+./install.sh                       # Auto-detect OS and install everything
+./install.sh --os arch              # Force Arch Linux installation
+./install.sh --symlinks-only        # Only create symlinks
+./install.sh --dry-run              # Preview changes
 ```
+
+## 📁 Directory Structure
+
+The dotfiles are organized into several categories:
+
+```
+dotfiles/
+├── bin/                    # Executable scripts (symlinked to ~/.local/bin/)
+├── config/
+│   ├── universal/          # Cross-platform configurations
+│   ├── linux/              # Linux-specific configurations
+│   └── [os]/               # OS-specific configurations (macos, arch)
+├── os/                     # OS-specific installation scripts
+└── lib/                    # Utility functions
+```
+
+### Configuration Categories
+
+- **Universal**: Configs that work across all platforms (fish, nvim, git, etc.)
+- **Linux**: Configs specific to Linux distributions (hyprland, waybar, etc.)
+- **OS-specific**: Configs for specific operating systems
 
 ## 🔧 Customization
 
 ### Adding New Applications
 
-1. **Add the application config** to the appropriate directory in `config/`
-3. **Add packages** to the OS-specific package files (`os/macos/Brewfile` or `os/arch/packages.txt`)
-2. **Update the profile files** (`profiles/macos.conf` or `profiles/arch.conf`) to include symlink mappings (optional)
+1. **Add the application config** to the appropriate directory:
+   - `config/universal/` for cross-platform apps
+   - `config/linux/` for Linux-specific apps
+   - `config/macos/` or `config/arch/` for OS-specific apps
+
+2. **Add packages** to OS-specific package files:
+   - macOS: `os/macos/Brewfile`
+   - Arch: `os/arch/packages.txt`
+
+3. **The symlinks are created automatically** based on directory structure - no manual configuration needed!
 
 ### Adding New Operating Systems
 
@@ -70,40 +119,63 @@ The installer supports several options for different use cases:
 2. Add an `install.sh` script for that OS
 3. Create package files specific to that OS
 4. Add OS detection logic to `lib/detect.sh`
-5. Create a profile file in `profiles/`
+5. Optionally add OS-specific configs in `config/ubuntu/`
 
-### Profile Configuration Format
+The symlink system will automatically discover and link configurations!
 
-In the event that automatic detection will not work for your environment, you can create OS specific profiles which direct the script where to place your configs and scripts.
-Profiles use a simple `source=target` format:
+## 🎯 Key Features in Detail
 
+### Smart Editor Integration
 ```bash
-# Example: profiles/macos.conf
-fish/config.fish=$HOME/.config/fish/config.fish
-config/kitty/kitty.conf=$HOME/.config/kitty/kitty.conf
-bin/ec=$HOME/.local/bin/ec
+dotfiles edit                       # Open entire dotfiles in $EDITOR
+dotfiles edit nvim                  # Open nvim config specifically
+dotfiles edit hypr                  # Open hyprland config
+```
+- Requires `$EDITOR` environment variable
+- Automatically finds configs across all directories
+- Interactive selection when multiple matches exist
+
+### Intelligent Symlink Management
+- **Automatic discovery**: No manual configuration needed
+- **Conflict resolution**: Existing files backed up with timestamps
+- **Broken link cleanup**: `dotfiles clean` removes orphaned symlinks
+- **Selective removal**: Remove individual configs or all at once
+
+### Status and Information
+```bash
+dotfiles status                     # See what's currently linked
+dotfiles list                       # See all available configurations
 ```
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-**SSH Key Issues**: If you encounter SSH authentication problems, the installer will guide you through setting up a new SSH key for GitHub.
-
-**Permission Errors**: Make sure all scripts are executable:
+**Missing $EDITOR**: Set your preferred editor:
 ```bash
-chmod +x install.sh lib/*.sh os/*/install.sh
+export EDITOR=nvim                  # Add to your shell profile
 ```
 
-**Symlink Conflicts**: Existing files will be backed up with a timestamp before creating symlinks.
+**Permission Errors**: The installer automatically makes scripts executable, but if needed:
+```bash
+chmod +x install.sh bin/* lib/*.sh os/*/install.sh
+```
+
+**Symlink Conflicts**: Existing files are automatically backed up to `~/.config/_backups/`
+
+**Broken Symlinks**: Clean them up easily:
+```bash
+dotfiles clean                      # Remove all broken symlinks
+```
 
 ### Getting Help
 
 If you encounter issues:
-1. Run with `--dry-run` first to see what would happen
-2. Check the logs for specific error messages
-3. Ensure your OS is supported (macOS or Arch Linux)
-4. Make sure you have internet connectivity for package downloads
+1. Use `dotfiles status` to see current state
+2. Run `dotfiles install --dry-run` to preview changes
+3. Check `dotfiles help [command]` for specific command help
+4. Ensure your OS is supported (macOS or Arch Linux)
+5. Verify internet connectivity for package downloads
 
 ## 📝 Creating Your Own Dotfiles
 
@@ -111,11 +183,36 @@ To create your own version:
 
 1. **Fork this repository**
 2. **Customize the configurations** in the `config/` directory
-3. **Update package lists** in `os/*/` directories
-4. **Modify profiles** in `profiles/` to match your setup
-5. **Adjust OS-specific scripts** as needed
+3. **Update package lists** in `os/*/` directories  
+4. **Add your own bin scripts** in the `bin/` directory
+5. **Adjust OS-specific installation scripts** as needed
 
-The modular structure makes it easy to add, remove, or modify components without affecting the core functionality.
+The modular structure and automatic discovery system make it easy to add, remove, or modify components without affecting the core functionality.
+
+### Available Configurations
+
+This dotfiles setup currently includes:
+
+**Universal (Cross-platform):**
+- Fish shell with plugins and themes
+- Neovim with comprehensive Lua configuration
+- Git configuration and global gitignore
+- Kitty terminal emulator
+- Tmux with plugin management
+- Wezterm terminal
+- Ghostty terminal
+
+**Linux-specific:**
+- Hyprland wayland compositor with full configuration
+- Waybar status bar with custom modules
+- Wofi application launcher
+- Wlogout logout menu
+- OpenRazer and Polychromatic for Razer peripherals
+
+**Utility Scripts:**
+- `ec`: Edit configurations quickly
+- `tp`: Project navigation tool
+- `setup`: Environment setup utilities
 
 ## Thanks To...
 
