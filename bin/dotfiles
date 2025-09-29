@@ -1,0 +1,463 @@
+#!/bin/bash
+
+# =============================================================================
+# Script Name : dotfiles
+# Description : CLI interface for managing dotfiles configuration
+# =============================================================================
+
+set -e
+
+# Find dotfiles root directory
+DOTFILES_ROOT="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+
+# Source utility functions
+source "$DOTFILES_ROOT/lib/detect.sh"
+source "$DOTFILES_ROOT/lib/symlink.sh"
+
+print_banner() {
+    echo "╔══════════════════════════════════════════════════════════════╗"
+    echo "║                      Dotfiles Manager                       ║"
+    echo "║                    CLI Configuration Tool                    ║"
+    echo "╚══════════════════════════════════════════════════════════════╝"
+    echo
+}
+
+show_help() {
+    local command="$1"
+    
+    case "$command" in
+        install)
+            cat << EOF
+Usage: dotfiles install [options]
+
+Install dotfiles configuration and create symlinks.
+
+Options:
+    -o, --os OS                 Force specific OS (macos, arch)
+        --symlinks-only         Only create symlinks, skip package installation
+        --no-symlinks           Skip symlink creation
+        --dry-run               Show what would be done without making changes
+
+Examples:
+    dotfiles install                    # Auto-detect OS and install everything
+    dotfiles install --os arch          # Force Arch Linux installation
+    dotfiles install --symlinks-only    # Only create symlinks
+    dotfiles install --dry-run          # Preview changes without applying them
+
+EOF
+            ;;
+        remove)
+            cat << EOF
+Usage: dotfiles remove <config|all>
+
+Remove symlinks for specific configuration or all configurations.
+
+Arguments:
+    config                      Name of specific config to remove (e.g., nvim, fish)
+    all                         Remove all dotfiles symlinks
+
+Examples:
+    dotfiles remove nvim                # Remove nvim config symlinks
+    dotfiles remove fish                # Remove fish config symlinks
+    dotfiles remove all                 # Remove all dotfiles symlinks
+
+Note: This only removes symlinks, not the source configuration files.
+
+EOF
+            ;;
+        clean)
+            cat << EOF
+Usage: dotfiles clean
+
+Remove broken symlinks from ~/.local/bin and ~/.config directories.
+
+This command finds and removes symlinks that point to non-existent files,
+which can happen when config files are moved or deleted.
+
+Examples:
+    dotfiles clean                      # Clean up broken symlinks
+
+EOF
+            ;;
+        status)
+            cat << EOF
+Usage: dotfiles status
+
+Show current symlink status for all configurations.
+
+This command displays which configurations are currently linked and which
+are available but not linked.
+
+Examples:
+    dotfiles status                     # Show current symlink status
+
+EOF
+            ;;
+        list)
+            cat << EOF
+Usage: dotfiles list
+
+Show all available configurations that can be installed.
+
+This command lists all bin scripts and config directories available
+for symlinking, organized by category (universal, OS-specific, etc.).
+
+Examples:
+    dotfiles list                       # Show available configurations
+
+EOF
+            ;;
+        *)
+            cat << EOF
+Usage: dotfiles <command> [options]
+
+Commands:
+    install [options]           Install dotfiles configuration
+    remove <config|all>         Remove symlinks for specific config or all
+    clean                       Remove broken symlinks
+    status                      Show current symlink status
+    list                        Show available configurations
+    help [command]              Show help for specific command
+
+Install Options:
+    -o, --os OS                 Force specific OS (macos, arch)
+        --symlinks-only         Only create symlinks, skip package installation
+        --no-symlinks           Skip symlink creation
+        --dry-run               Show what would be done without making changes
+
+Examples:
+    dotfiles install                    # Auto-detect OS and install everything
+    dotfiles install --os arch          # Force Arch Linux installation
+    dotfiles install --symlinks-only    # Only create symlinks
+    dotfiles install --dry-run          # Preview changes without applying them
+    dotfiles remove nvim                # Remove nvim config symlinks
+    dotfiles remove all                 # Remove all dotfiles symlinks
+    dotfiles clean                      # Clean up broken symlinks
+    dotfiles status                     # Show current symlink status
+    dotfiles help install              # Show help for install command
+
+EOF
+            ;;
+    esac
+}
+
+show_status() {
+    local os="$1"
+    echo "Dotfiles Status:"
+    echo "=================="
+    echo "Root: $DOTFILES_ROOT"
+    echo "OS: $os"
+    echo
+    
+    local found_symlinks=false
+    
+    # Check bin scripts
+    echo "Bin Scripts:"
+    if [[ -d "$DOTFILES_ROOT/bin" ]]; then
+        for script in "$DOTFILES_ROOT/bin"/*; do
+            [[ -f "$script" ]] || continue
+            local script_name="$(basename "$script")"
+            local target="$HOME/.local/bin/$script_name"
+            if [[ -L "$target" && "$(readlink "$target")" == "$script" ]]; then
+                echo "  ✓ $script_name -> $target"
+                found_symlinks=true
+            else
+                echo "  ✗ $script_name (not linked)"
+            fi
+        done
+    else
+        echo "  (no bin directory)"
+    fi
+    
+    echo
+    echo "Config Directories:"
+    
+    # Check universal configs
+    if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
+        for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            local target="$HOME/.config/$config_name"
+            if [[ -L "$target" && "$(readlink "$target")" == "$config_dir" ]]; then
+                echo "  ✓ $config_name (universal) -> $target"
+                found_symlinks=true
+            else
+                echo "  ✗ $config_name (universal) (not linked)"
+            fi
+        done
+    fi
+    
+    # Check OS-specific configs
+    local os_config_dir="$DOTFILES_ROOT/config/$os"
+    if [[ -d "$os_config_dir" ]]; then
+        for config_dir in "$os_config_dir"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            local target="$HOME/.config/$config_name"
+            if [[ -L "$target" && "$(readlink "$target")" == "$config_dir" ]]; then
+                echo "  ✓ $config_name ($os) -> $target"
+                found_symlinks=true
+            else
+                echo "  ✗ $config_name ($os) (not linked)"
+            fi
+        done
+    fi
+    
+    # Check Linux configs for Linux distros
+    if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
+        local linux_config_dir="$DOTFILES_ROOT/config/linux"
+        if [[ -d "$linux_config_dir" ]]; then
+            for config_dir in "$linux_config_dir"/*; do
+                [[ -d "$config_dir" ]] || continue
+                local config_name="$(basename "$config_dir")"
+                local target="$HOME/.config/$config_name"
+                if [[ -L "$target" && "$(readlink "$target")" == "$config_dir" ]]; then
+                    echo "  ✓ $config_name (linux) -> $target"
+                    found_symlinks=true
+                else
+                    echo "  ✗ $config_name (linux) (not linked)"
+                fi
+            done
+        fi
+    fi
+    
+    if [[ "$found_symlinks" == false ]]; then
+        echo "  (no active symlinks found)"
+    fi
+}
+
+show_list() {
+    local os="$1"
+    echo "Available Configurations:"
+    echo "========================="
+    
+    # List bin scripts
+    echo "Bin Scripts:"
+    if [[ -d "$DOTFILES_ROOT/bin" ]]; then
+        for script in "$DOTFILES_ROOT/bin"/*; do
+            [[ -f "$script" ]] || continue
+            local script_name="$(basename "$script")"
+            echo "  $script_name"
+        done
+    else
+        echo "  (none)"
+    fi
+    
+    echo
+    echo "Config Directories:"
+    
+    # List universal configs
+    echo "  Universal:"
+    if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
+        for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            echo "    $config_name"
+        done
+    else
+        echo "    (none)"
+    fi
+    
+    # List OS-specific configs
+    echo "  $os:"
+    local os_config_dir="$DOTFILES_ROOT/config/$os"
+    if [[ -d "$os_config_dir" ]]; then
+        for config_dir in "$os_config_dir"/*; do
+            [[ -d "$config_dir" ]] || continue
+            local config_name="$(basename "$config_dir")"
+            echo "    $config_name"
+        done
+    else
+        echo "    (none)"
+    fi
+    
+    # List Linux configs for Linux distros
+    if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
+        echo "  Linux:"
+        local linux_config_dir="$DOTFILES_ROOT/config/linux"
+        if [[ -d "$linux_config_dir" ]]; then
+            for config_dir in "$linux_config_dir"/*; do
+                [[ -d "$config_dir" ]] || continue
+                local config_name="$(basename "$config_dir")"
+                echo "    $config_name"
+            done
+        else
+            echo "    (none)"
+        fi
+    fi
+}
+
+handle_install() {
+    local forced_os=""
+    local symlinks_only=false
+    local no_symlinks=false
+    local dry_run=false
+
+    # Parse install-specific arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -o|--os)
+                forced_os="$2"
+                shift 2
+                ;;
+            --symlinks-only)
+                symlinks_only=true
+                shift
+                ;;
+            --no-symlinks)
+                no_symlinks=true
+                shift
+                ;;
+            --dry-run)
+                dry_run=true
+                shift
+                ;;
+            *)
+                log_error "Unknown install option: $1"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+
+    print_banner
+
+    # Detect or use forced OS
+    local detected_os
+    if [[ -n "$forced_os" ]]; then
+        detected_os="$forced_os"
+        log_info "Using forced OS: $detected_os"
+    else
+        detected_os="$(detect_os)"
+        log_info "Detected OS: $detected_os"
+    fi
+
+    local architecture="$(detect_architecture)"
+    log_info "Detected architecture: $architecture"
+
+    # Validate OS support
+    case "$detected_os" in
+        macos|arch)
+            log_success "OS supported: $detected_os"
+            ;;
+        *)
+            log_error "Unsupported OS: $detected_os"
+            log_error "Supported OS types: macos, arch"
+            exit 1
+            ;;
+    esac
+
+    if [[ "$dry_run" == true ]]; then
+        log_warn "DRY RUN MODE - No changes will be made"
+        echo
+    fi
+
+    # Check if OS-specific installer exists
+    local os_installer="$DOTFILES_ROOT/os/$detected_os/install.sh"
+    if [[ ! -f "$os_installer" ]]; then
+        log_error "OS installer not found: $os_installer"
+        exit 1
+    fi
+
+    # Run OS-specific installation (unless symlinks-only)
+    if [[ "$symlinks_only" != true ]]; then
+        if [[ "$dry_run" == true ]]; then
+            log_info "Would run OS-specific installer: $os_installer"
+        else
+            log_info "Running OS-specific installer..."
+            source "$os_installer"
+        fi
+    fi
+
+    # Create symlinks (unless disabled)
+    if [[ "$no_symlinks" != true ]]; then
+        if [[ "$dry_run" == true ]]; then
+            log_info "Would auto-discover and create symlinks for OS: $detected_os"
+            # Show what symlinks would be created (existing dry-run logic from install.sh)
+        else
+            create_symlinks "$detected_os"
+        fi
+    fi
+
+    if [[ "$dry_run" != true ]]; then
+        echo
+        log_success "Installation completed successfully!"
+        echo
+        log_info "Next steps:"
+        echo "  • Restart your terminal or run 'exec fish' to reload fish config"
+        echo "  • Configure any remaining applications manually"
+        echo "  • Enjoy your new setup! 🎉"
+    else
+        echo
+        log_info "Dry run completed. Use the command without --dry-run to apply changes."
+    fi
+}
+
+handle_remove() {
+    local target="$1"
+    
+    if [[ -z "$target" ]]; then
+        log_error "Missing argument for remove command"
+        echo "Usage: dotfiles remove <config_name|all>"
+        echo "Examples:"
+        echo "  dotfiles remove nvim     # Remove nvim config only"
+        echo "  dotfiles remove all      # Remove all dotfiles"
+        exit 1
+    fi
+
+    local detected_os="$(detect_os)"
+    
+    if [[ "$target" == "all" ]]; then
+        remove_symlinks "$detected_os"
+        log_success "All dotfiles symlinks removed!"
+    else
+        remove_single_config "$target" "$detected_os"
+        log_success "Removed symlinks for: $target"
+    fi
+}
+
+handle_clean() {
+    clean_broken_symlinks
+}
+
+main() {
+    local command="$1"
+    shift
+
+    case "$command" in
+        install)
+            handle_install "$@"
+            ;;
+        remove)
+            handle_remove "$@"
+            ;;
+        clean)
+            handle_clean
+            ;;
+        status)
+            show_status "$(detect_os)"
+            ;;
+        list)
+            show_list "$(detect_os)"
+            ;;
+        help|--help|-h)
+            show_help "$1"
+            ;;
+        "")
+            show_help
+            ;;
+        *)
+            log_error "Unknown command: $command"
+            echo
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
+# Make sure all lib scripts are executable
+chmod +x "$DOTFILES_ROOT"/lib/*.sh
+chmod +x "$DOTFILES_ROOT"/os/*/install.sh
+
+# Run main function with all arguments
+main "$@"
