@@ -107,6 +107,26 @@ Examples:
 
 EOF
             ;;
+        edit)
+            cat << EOF
+Usage: dotfiles edit [config]
+
+Open dotfiles directory or specific configuration in your editor.
+
+Arguments:
+    config                      Name of specific config to edit (e.g., nvim, fish)
+                               If omitted, opens entire dotfiles directory
+
+Examples:
+    dotfiles edit                       # Open entire dotfiles directory
+    dotfiles edit nvim                  # Edit nvim configuration
+    dotfiles edit fish                  # Edit fish configuration
+    dotfiles edit hypr                  # Edit hyprland configuration
+
+Note: Requires \$EDITOR environment variable to be set.
+
+EOF
+            ;;
         *)
             cat << EOF
 Usage: dotfiles <command> [options]
@@ -117,6 +137,7 @@ Commands:
     clean                       Remove broken symlinks
     status                      Show current symlink status
     list                        Show available configurations
+    edit [config]               Open dotfiles or specific config in editor
     help [command]              Show help for specific command
 
 Install Options:
@@ -134,6 +155,7 @@ Examples:
     dotfiles remove all                 # Remove all dotfiles symlinks
     dotfiles clean                      # Clean up broken symlinks
     dotfiles status                     # Show current symlink status
+    dotfiles edit nvim                  # Edit nvim configuration
     dotfiles help install              # Show help for install command
 
 EOF
@@ -420,6 +442,99 @@ handle_clean() {
     clean_broken_symlinks
 }
 
+find_config_path() {
+    local config_name="$1"
+    local detected_os="$2"
+    local found_paths=()
+    
+    # Check universal configs first
+    if [[ -d "$DOTFILES_ROOT/config/universal/$config_name" ]]; then
+        found_paths+=("$DOTFILES_ROOT/config/universal/$config_name")
+    fi
+    
+    # Check OS-specific configs
+    if [[ -d "$DOTFILES_ROOT/config/$detected_os/$config_name" ]]; then
+        found_paths+=("$DOTFILES_ROOT/config/$detected_os/$config_name")
+    fi
+    
+    # Check Linux configs for Linux distros
+    if [[ "$detected_os" =~ ^(arch|debian|redhat|linux)$ ]]; then
+        if [[ -d "$DOTFILES_ROOT/config/linux/$config_name" ]]; then
+            found_paths+=("$DOTFILES_ROOT/config/linux/$config_name")
+        fi
+    fi
+    
+    # Check bin scripts
+    if [[ -f "$DOTFILES_ROOT/bin/$config_name" ]]; then
+        found_paths+=("$DOTFILES_ROOT/bin/$config_name")
+    fi
+    
+    echo "${found_paths[@]}"
+}
+
+handle_edit() {
+    local config_name="$1"
+    
+    # Check if EDITOR is set
+    if [[ -z "$EDITOR" ]]; then
+        log_error "\$EDITOR environment variable is not set"
+        echo
+        echo "Please set your editor preference:"
+        echo "  export EDITOR=nvim      # For Neovim"
+        echo "  export EDITOR=vim       # For Vim"
+        echo "  export EDITOR=code      # For VS Code"
+        echo "  export EDITOR=nano      # For Nano"
+        echo
+        echo "Add this to your shell profile (~/.bashrc, ~/.zshrc, ~/.config/fish/config.fish)"
+        exit 1
+    fi
+    
+    # If no config specified, open entire dotfiles directory
+    if [[ -z "$config_name" ]]; then
+        log_info "Opening dotfiles directory in $EDITOR..."
+        exec "$EDITOR" "$DOTFILES_ROOT"
+        return
+    fi
+    
+    local detected_os="$(detect_os)"
+    local found_paths=($(find_config_path "$config_name" "$detected_os"))
+    
+    if [[ ${#found_paths[@]} -eq 0 ]]; then
+        log_error "Configuration '$config_name' not found"
+        echo
+        echo "Available configurations:"
+        show_list "$detected_os"
+        exit 1
+    elif [[ ${#found_paths[@]} -eq 1 ]]; then
+        local target_path="${found_paths[0]}"
+        log_info "Opening $config_name configuration in $EDITOR..."
+        log_info "Path: $target_path"
+        exec "$EDITOR" "$target_path"
+    else
+        # Multiple matches found - show options
+        log_info "Multiple '$config_name' configurations found:"
+        echo
+        for i in "${!found_paths[@]}"; do
+            local path="${found_paths[$i]}"
+            local relative_path="${path#$DOTFILES_ROOT/}"
+            echo "  $((i+1)). $relative_path"
+        done
+        echo
+        echo -n "Select configuration to edit (1-${#found_paths[@]}): "
+        read -r selection
+        
+        if [[ "$selection" =~ ^[0-9]+$ ]] && [[ "$selection" -ge 1 ]] && [[ "$selection" -le "${#found_paths[@]}" ]]; then
+            local target_path="${found_paths[$((selection-1))]}"
+            log_info "Opening selected configuration in $EDITOR..."
+            log_info "Path: $target_path"
+            exec "$EDITOR" "$target_path"
+        else
+            log_error "Invalid selection"
+            exit 1
+        fi
+    fi
+}
+
 main() {
     local command="$1"
     shift
@@ -433,6 +548,9 @@ main() {
             ;;
         clean)
             handle_clean
+            ;;
+        edit)
+            handle_edit "$@"
             ;;
         status)
             show_status "$(detect_os)"
