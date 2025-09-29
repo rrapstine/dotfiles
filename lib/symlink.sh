@@ -108,7 +108,15 @@ auto_link_config() {
 
 backup_existing_file() {
     local file="$1"
-    local backup="${file}.backup.$(date +%Y%m%d_%H%M%S)"
+    local backup_dir="$HOME/.config/_backups"
+    local filename="$(basename "$file")"
+    local backup="$backup_dir/${filename}.backup.$(date +%Y%m%d_%H%M%S)"
+
+    # Create backup directory if it doesn't exist
+    if [[ ! -d "$backup_dir" ]]; then
+        log_info "Creating backup directory: $backup_dir"
+        mkdir -p "$backup_dir"
+    fi
 
     log_info "Backing up existing file: $file -> $backup"
     mv "$file" "$backup"
