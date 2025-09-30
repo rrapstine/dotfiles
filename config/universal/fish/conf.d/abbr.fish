@@ -8,7 +8,7 @@ abbr -a l. 'eza -a | grep -e "^\."' # show only dotfiles
 # General QoL
 abbr -a .. 'cd ..'
 abbr -a nuke 'rm -rf'
-abbr -a clear 'clear && ls'
+abbr -a clear 'clear && eza --color=always --group-directories-first --icons'
 
 # Git shortcuts
 abbr -a gs 'git status'

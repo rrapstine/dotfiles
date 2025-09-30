@@ -27,6 +27,12 @@ create_symlinks() {
             [[ -d "$config_dir" ]] || continue
             local config_name="$(basename "$config_dir")"
             auto_link_config "config/universal/$config_name" "$config_name"
+            
+            # Post-symlink hooks
+            if [[ "$config_name" == "bat" ]] && command -v bat &> /dev/null; then
+                log_info "Rebuilding bat cache with themes..."
+                bat cache --build 2>/dev/null || log_warn "Failed to rebuild bat cache"
+            fi
         done
     fi
 

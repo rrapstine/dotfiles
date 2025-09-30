@@ -58,6 +58,11 @@ config.colors = config.colors or {}
 config.colors.tab_bar = config.colors.tab_bar or {}
 config.colors.tab_bar.background = 'transparent'
 
+-- Set mauve accent color overrides
+config.colors.cursor_bg = '#c6a0f6'  -- mauve
+config.colors.selection_bg = '#c6a0f6'  -- mauve  
+config.colors.selection_fg = '#1e1e2e'  -- base
+
 config.status_update_interval = 500
 
 -- Font settings
