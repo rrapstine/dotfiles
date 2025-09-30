@@ -1,6 +1,25 @@
 {
   "position": "top",
   "modules-left": ["hyprland/workspaces"],
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": "",
+      "5": "",
+      "10": ""
+    },
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "10": []
+    }
+  },
   "modules-center": ["hyprland/window"],
   "modules-right": ["custom/spotify", "network", "pulseaudio", "clock", "custom/power"],
   "clock": {
