@@ -1,7 +1,8 @@
 return {
-  'goolord/alpha-nvim',
+  'nvimdev/dashboard-nvim',
+  event = 'VimEnter',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = function()
-    require('config.alpha')
+    require('config.dashboard')
   end,
 }
