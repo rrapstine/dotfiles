@@ -1,15 +1,17 @@
 {
   "position": "top",
   "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": ["custom/spotify", "network", "pulseaudio", "clock", "custom/power"],
   "hyprland/workspaces": {
     "format": "{icon}",
     "format-icons": {
-      "1": "",
-      "2": "",
-      "3": "",
-      "4": "",
-      "5": "",
-      "10": ""
+      "1": "󰈹",
+      "2": "󰆍",
+      "3": "󰊴",
+      "4": "󰙯",
+      "5": "󰉋",
+      "10": "󰎆"
     },
     "persistent-workspaces": {
       "1": [],
@@ -20,8 +22,6 @@
       "10": []
     }
   },
-  "modules-center": ["hyprland/window"],
-  "modules-right": ["custom/spotify", "network", "pulseaudio", "clock", "custom/power"],
   "clock": {
     "format": "<span foreground='#f5c2e7'>   </span>{:%a %d %H:%M}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
