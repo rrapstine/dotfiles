@@ -1,0 +1,65 @@
+# Core system packages
+base-devel
+git
+curl
+wget
+
+# Shell and terminal
+zsh
+fish
+tmux
+starship
+
+# Development tools
+neovim
+nodejs
+npm
+python
+python-pip
+rust
+go
+lua
+luarocks
+
+# CLI utilities
+bat
+eza
+fd
+ripgrep
+fzf
+zoxide
+dust
+procs
+hyperfine
+jq
+yq
+
+# Network and system tools
+openssh
+rsync
+unzip
+tree
+
+# AUR packages (marked with aur: prefix)
+aur:yay
+aur:lazygit
+aur:bun-bin
+
+# Desktop environment (if needed)
+# Uncomment based on your desktop environment preference
+# aur:hyprland
+# waybar
+# wofi
+# mako
+# grim
+# slurp
+# wl-clipboard
+
+# Fonts
+ttf-hack-nerd
+ttf-iosevka-nerd
+
+# Optional: Terminal emulators
+# kitty
+# alacritty
+# aur:wezterm

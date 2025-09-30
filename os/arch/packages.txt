@@ -1,14 +1,19 @@
 # Core system packages
+base
 base-devel
 git
+github-cli
 curl
 wget
+rsync
 
 # Shell and terminal
 zsh
 fish
 tmux
 starship
+alacritty
+aur:wezterm-git
 
 # Development tools
 neovim
@@ -20,6 +25,11 @@ rust
 go
 lua
 luarocks
+php
+composer
+ruby
+just
+aur:opencode-bin
 
 # CLI utilities
 bat
@@ -33,33 +43,91 @@ procs
 hyperfine
 jq
 yq
+btop
+
+# Archive tools
+p7zip
+unrar
 
 # Network and system tools
 openssh
-rsync
-unzip
 tree
 
-# AUR packages (marked with aur: prefix)
-aur:yay
-aur:lazygit
-aur:bun-bin
+# Hyprland desktop environment
+hyprland
+hypridle
+hyprlock
+hyprpaper
+waybar
+mako
+wofi
+wlogout
+wob
+grimblast-git
+slurp
+swappy
+wl-clipboard
+xdg-desktop-portal-hyprland
+swaybg
+swaylock-effects-git
+uwsm
 
-# Desktop environment (if needed)
-# Uncomment based on your desktop environment preference
-# aur:hyprland
-# waybar
-# wofi
-# mako
-# grim
-# slurp
-# wl-clipboard
+# Audio/Video
+pipewire-alsa
+pipewire-pulse
+wireplumber
+pavucontrol
+pamixer
+gst-libav
+gst-plugin-pipewire
+gst-plugins-bad
+gst-plugins-ugly
+gst-plugin-va
+ffmpegthumbnailer
+
+# Gaming
+cachyos-gaming-applications
+cachyos-gaming-meta
+
+# Applications
+aur:zen-browser-bin
+aur:spicetify-cli
+spotify-launcher
+aur:polychromatic
+
+# System utilities
+cups
+cups-filters
+cups-pdf
+bluez
+bluez-utils
+networkmanager
+ufw
+power-profiles-daemon
 
 # Fonts
 ttf-hack-nerd
 ttf-iosevka-nerd
+ttf-meslo-nerd
+ttf-dejavu
+ttf-liberation
+ttf-opensans
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+noto-color-emoji-fontconfig
+adobe-source-han-sans-cn-fonts
+adobe-source-han-sans-jp-fonts
+adobe-source-han-sans-kr-fonts
+awesome-terminal-fonts
 
-# Optional: Terminal emulators
-# kitty
-# alacritty
-# aur:wezterm
+# Package manager
+aur:yay
+
+# CachyOS specific
+cachyos-hooks
+cachyos-keyring
+cachyos-mirrorlist
+cachyos-settings
+cachyos-packageinstaller
+cachyos-kernel-manager
