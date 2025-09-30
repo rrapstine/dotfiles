@@ -2,7 +2,7 @@
   "position": "top",
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["hyprland/window"],
-  "modules-right": ["network", "pulseaudio", "clock", "custom/power"],
+  "modules-right": ["custom/spotify", "network", "pulseaudio", "clock", "custom/power"],
   "clock": {
     "format": "<span foreground='#f5c2e7'>   </span>{:%a %d %H:%M}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
@@ -42,4 +42,13 @@
     "tooltip": false,
     "on-click": "wlogout"
   },
+  "custom/spotify": {
+    "format": "{}",
+    "exec": "~/.config/waybar/modules/spotify.sh",
+    "interval": 1,
+    "return-type": "json",
+    "on-click": "playerctl --player=spotify play-pause",
+    "max-length": 40,
+    "scroll-step": 1
+  }
 }
