@@ -134,3 +134,8 @@ button:hover {
     padding-left: 6px;
     padding-right: 6px;
 }
+
+#custom-spotify {
+    color: @green;
+    border-bottom: 2px solid @green;
+}
