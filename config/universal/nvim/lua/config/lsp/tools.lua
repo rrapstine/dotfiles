@@ -45,6 +45,16 @@ M.tools = {
   intelephense = {
     type = { 'lsp' },
     filetypes = { 'php' },
+    settings = {
+      intelephense = {
+        environment = {
+          includePaths = {
+            'backend',
+            'backend/vendor',
+          },
+        },
+      },
+    },
   },
 
   dockerls = {
@@ -67,7 +77,7 @@ M.tools = {
     type = { 'formatter' },
     filetypes = { 'lua' },
     formatter = {
-      args = { '--config-path', vim.fn.stdpath('config') .. '/lua/config/formatting/stylua.toml', '-' },
+      args = { '--config-path', vim.fn.stdpath('config') .. '/lua/config/formatters/stylua.toml' },
     },
   },
 

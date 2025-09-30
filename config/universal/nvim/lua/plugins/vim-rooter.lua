@@ -1,4 +1,5 @@
 return {
+  enabled = false,
   'airblade/vim-rooter',
 
   -- Instead of running each time a file is opened...

@@ -14,6 +14,7 @@ return {
     reveal = true,
     close_if_last_window = true,
     enable_cursor_hijack = true,
+    open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf' },
     filesystem = {
       window = {
         position = 'right',
