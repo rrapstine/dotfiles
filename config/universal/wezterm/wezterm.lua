@@ -128,7 +128,7 @@ config.keys = {
   { key = '|', mods = os_mod, action = wezterm.action.SplitVertical({ domain = 'CurrentPaneDomain' }) },
 
   -- Enable vi like scrolling of scrollback buffer
-  { key = 'v', mods = os_mod, action = wezterm.action.ActivateCopyMode },
+  { key = 'b', mods = os_mod, action = wezterm.action.ActivateCopyMode },
 
   -- Enable pop-out terminal to the right
   {
