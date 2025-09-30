@@ -2,6 +2,13 @@
 
 # OS and distribution detection utilities
 
+detect_cachyos() {
+    if [[ -f /etc/cachyos-release ]] || { [[ -f /usr/lib/os-release ]] && grep -q "CachyOS" /usr/lib/os-release 2>/dev/null; }; then
+        return 0
+    fi
+    return 1
+}
+
 detect_os() {
     case "$(uname -s)" in
         Darwin*)
@@ -9,7 +16,11 @@ detect_os() {
             ;;
         Linux*)
             if [ -f /etc/arch-release ]; then
-                echo "arch"
+                if detect_cachyos; then
+                    echo "cachyos"
+                else
+                    echo "arch"
+                fi
             elif [ -f /etc/debian_version ]; then
                 echo "debian"
             elif [ -f /etc/redhat-release ]; then

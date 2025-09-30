@@ -15,6 +15,9 @@ install_packages() {
         arch)
             install_arch_packages "$packages_file"
             ;;
+        cachyos)
+            install_cachyos_packages "$packages_file"
+            ;;
         *)
             log_error "Unsupported OS: $os"
             return 1
@@ -81,6 +84,70 @@ install_arch_packages() {
     done < "$packages_file"
     
     log_success "Arch packages installed successfully"
+}
+
+install_cachyos_packages() {
+    local packages_file="$1"
+    
+    log_info "Installing CachyOS packages from $packages_file"
+    
+    if [[ ! -f "$packages_file" ]]; then
+        log_error "Packages file not found: $packages_file"
+        return 1
+    fi
+    
+    # Ensure CachyOS repos are prioritized
+    configure_cachyos_repos
+    
+    # Update system
+    sudo pacman -Syu --noconfirm
+    
+    # Install packages with CachyOS repo preference
+    while IFS= read -r package || [[ -n "$package" ]]; do
+        # Skip empty lines and comments
+        [[ -z "$package" || "$package" =~ ^#.* ]] && continue
+        
+        if [[ "$package" =~ ^aur: ]]; then
+            # AUR package
+            local aur_package="${package#aur:}"
+            install_aur_package "$aur_package"
+        else
+            # Try CachyOS repos first, fallback to other repos
+            install_cachyos_package "$package"
+        fi
+    done < "$packages_file"
+    
+    log_success "CachyOS packages installed successfully"
+}
+
+configure_cachyos_repos() {
+    log_info "Configuring CachyOS repository priority..."
+    
+    # Check if CachyOS repos are already properly configured
+    if pacman-conf --repo-list | head -3 | grep -q "cachyos"; then
+        log_info "CachyOS repositories already prioritized"
+        return 0
+    fi
+    
+    # Run cachyos-rate-mirrors to optimize repo configuration
+    if has_command cachyos-rate-mirrors; then
+        log_info "Optimizing CachyOS mirror configuration..."
+        sudo cachyos-rate-mirrors
+    else
+        log_warn "cachyos-rate-mirrors not found, skipping optimization"
+    fi
+}
+
+install_cachyos_package() {
+    local package="$1"
+    
+    log_info "Installing package: $package"
+    
+    # Try to install from CachyOS repos first, then fallback
+    if ! sudo pacman -S --needed --noconfirm "$package" 2>/dev/null; then
+        log_warn "Package $package installation failed, retrying..."
+        sudo pacman -S --needed --noconfirm "$package"
+    fi
 }
 
 install_aur_package() {

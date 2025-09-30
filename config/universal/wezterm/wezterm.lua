@@ -63,6 +63,9 @@ config.colors.cursor_bg = '#c6a0f6'  -- mauve
 config.colors.selection_bg = '#c6a0f6'  -- mauve  
 config.colors.selection_fg = '#1e1e2e'  -- base
 
+-- Disable hyperlinks entirely
+config.hyperlink_rules = {}
+
 config.status_update_interval = 500
 
 -- Font settings
