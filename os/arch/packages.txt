@@ -52,6 +52,7 @@ unrar
 # Network and system tools
 openssh
 tree
+dnsmasq
 
 # Hyprland desktop environment
 hyprland

@@ -134,6 +134,31 @@ Note: Requires \$EDITOR environment variable to be set.
 
 EOF
             ;;
+        dns)
+            cat << EOF
+Usage: dotfiles dns <setup|remove|status>
+
+Manage .test domain DNS resolution for local development.
+
+Commands:
+    setup                       Configure .test domain resolution to localhost
+    remove                      Remove DNS configuration and restore defaults
+    status                      Check current DNS setup status
+
+Examples:
+    dotfiles dns setup                  # Setup .test domain resolution
+    dotfiles dns status                 # Check if DNS is working
+    dotfiles dns remove                 # Remove DNS configuration
+
+After setup, you can use domains like:
+    myproject.test:3000                 # Your local development server
+    api.test:8080                       # Local API server
+    frontend.test                       # Any .test domain resolves to 127.0.0.1
+
+Supported platforms: macOS, Arch Linux, and other systemd-resolved Linux distros
+
+EOF
+            ;;
         *)
             cat << EOF
 Usage: dotfiles <command> [options]
@@ -145,6 +170,7 @@ Commands:
     status                      Show current symlink status
     list                        Show available configurations
     edit [config]               Open dotfiles or specific config in editor
+    dns <setup|remove|status>   Manage .test domain DNS resolution
     help [command]              Show help for specific command
 
 Install Options:
@@ -164,6 +190,8 @@ Examples:
     dotfiles clean                      # Clean up broken symlinks
     dotfiles status                     # Show current symlink status
     dotfiles edit nvim                  # Edit nvim configuration
+    dotfiles dns setup                  # Setup .test domain resolution
+    dotfiles dns status                 # Check DNS setup status
     dotfiles help install              # Show help for install command
 
 EOF
@@ -724,6 +752,29 @@ main() {
             ;;
         "")
             show_help
+            ;;
+        dns)
+            case "${1:-}" in
+                setup)
+                    source "$DOTFILES_ROOT/lib/dns-setup.sh"
+                    setup_dns_test_domains
+                    ;;
+                remove)
+                    source "$DOTFILES_ROOT/lib/dns-setup.sh"
+                    remove_dns_setup
+                    ;;
+                status)
+                    source "$DOTFILES_ROOT/lib/dns-setup.sh"
+                    check_dns_status
+                    ;;
+                ""|*)
+                    echo "Usage: dotfiles dns {setup|remove|status}"
+                    echo "  setup   - Configure .test domain DNS resolution"
+                    echo "  remove  - Remove DNS configuration"
+                    echo "  status  - Check current DNS setup status"
+                    exit 1
+                    ;;
+            esac
             ;;
         *)
             log_error "Unknown command: $command"
