@@ -22,14 +22,17 @@ return {
         auto_update = false,
       })
 
-      -- Get capabilities from blink.cmp, starting with default LSP capabilities
-      local capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), require('blink.cmp').get_lsp_capabilities())
-
       -- Configure each LSP server BEFORE mason-lspconfig setup
       for _, tool in ipairs(tools_config.lsp_tools) do
         local server_opts = tool.opts or {}
-        -- Add blink.cmp capabilities
-        server_opts.capabilities = vim.tbl_deep_extend('force', capabilities, server_opts.capabilities or {})
+        
+        -- Only add blink.cmp capabilities if the tool doesn't define its own
+        if not server_opts.capabilities then
+          -- On Neovim 0.11+ with vim.lsp.config, blink.cmp capabilities are handled automatically
+          -- But we can still provide them for older setups or explicit needs
+          server_opts.capabilities = require('blink.cmp').get_lsp_capabilities()
+        end
+        
         -- Configure the server (this must happen before automatic enabling)
         vim.lsp.config(tool.name, server_opts)
       end

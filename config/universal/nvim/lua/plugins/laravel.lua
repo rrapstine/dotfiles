@@ -20,6 +20,7 @@ return {
     { "<leader>lo", function() Laravel.pickers.resources() end,            desc = "Laravel: Open Resources Picker" },
     { "<leader>lp", function() Laravel.commands.run("command_center") end, desc = "Laravel: Open Command Center" },
     { "<leader>le", function() Laravel.commands.run("env:configure:open") end, desc = "Laravel: Configure Environment" },
+
     {
       "gf",
       function()
@@ -37,7 +38,9 @@ return {
       noremap = true,
     },
   },
-  event = { "VeryLazy" },
+  cond = function()
+    return vim.fn.filereadable("artisan") == 1  -- Only load in Laravel projects
+  end,
   opts = function()
     local laravel_config = require('config.laravel')
     return {
