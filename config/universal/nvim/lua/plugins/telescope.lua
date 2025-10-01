@@ -91,5 +91,10 @@ return {
         layout_config = { width = 0.95 },
       })
     end, { desc = '[S]earch [A]ll (Hidden/Ignored)' })
+
+    -- Search all Neovim messages and notifications (including noice history)
+    vim.keymap.set('n', '<leader>sm', function()
+      pcall(telescope.extensions.noice.noice)
+    end, { desc = '[S]earch [M]essages/Notifications' })
   end,
 }

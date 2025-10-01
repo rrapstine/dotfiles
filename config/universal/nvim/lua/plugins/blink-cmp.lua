@@ -76,13 +76,18 @@ return {
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev', 'supermaven' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'supermaven', 'laravel' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
           supermaven = {
             name = 'supermaven',
             module = 'blink-cmp-supermaven',
             async = true,
+          },
+          laravel = {
+            name = 'laravel',
+            module = 'blink.compat.source',
+            score_offset = 95, -- show at a higher priority than lsp
           },
         },
       },
