@@ -19,6 +19,7 @@ return {
     { "<leader>lc", function() Laravel.pickers.commands() end,             desc = "Laravel: Open Commands Picker" },
     { "<leader>lo", function() Laravel.pickers.resources() end,            desc = "Laravel: Open Resources Picker" },
     { "<leader>lp", function() Laravel.commands.run("command_center") end, desc = "Laravel: Open Command Center" },
+    { "<leader>le", function() Laravel.commands.run("env:configure:open") end, desc = "Laravel: Configure Environment" },
     {
       "gf",
       function()
@@ -37,16 +38,16 @@ return {
     },
   },
   event = { "VeryLazy" },
-  opts = {
-    lsp_server = "phpactor",
-    features = {
-      pickers = {
-        provider = "telescope",
+  opts = function()
+    local laravel_config = require('config.laravel')
+    return {
+      lsp_server = "phpactor",
+      features = {
+        pickers = {
+          provider = "telescope",
+        },
       },
-    },
-    environments = {
-      env_variable = "NVIM_LARAVEL_ENV",
-      default = "docker-compose",
-    },
-  },
+      environments = laravel_config.get_environments(),
+    }
+  end,
 }
