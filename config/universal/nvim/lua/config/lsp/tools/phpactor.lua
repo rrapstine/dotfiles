@@ -3,31 +3,6 @@ return {
   lsp = {
     filetypes = { 'php' },
     root_dir = vim.fs.root(0, { 'composer.json', '.git', 'index.php' }),
-    capabilities = (function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-
-      -- Disable capabilities that intelephense free already provides well
-      capabilities.textDocument.completion = nil
-      capabilities.textDocument.hover = nil
-      capabilities.textDocument.signatureHelp = nil
-      capabilities.textDocument.definition = nil
-      capabilities.textDocument.references = nil
-      capabilities.textDocument.documentHighlight = nil
-      capabilities.textDocument.documentSymbol = nil
-      capabilities.workspace.symbol = nil
-      capabilities.textDocument.formatting = nil
-
-      -- Keep only the premium features that intelephense free doesn't provide
-      -- These will be phpactor's primary responsibilities:
-      -- - codeAction (main goal!)
-      -- - declaration
-      -- - typeDefinition
-      -- - implementation
-      -- - rename
-      -- - selectionRange
-
-      return capabilities
-    end)(),
     on_attach = function(client, bufnr)
       -- Explicitly disable overlapping capabilities at runtime
       client.server_capabilities.completionProvider = false
