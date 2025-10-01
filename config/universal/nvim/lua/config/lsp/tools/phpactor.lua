@@ -3,6 +3,9 @@ return {
   lsp = {
     filetypes = { 'php' },
     root_dir = vim.fs.root(0, { 'composer.json', '.git', 'index.php' }),
+    handlers = {
+      ['textDocument/publishDiagnostics'] = function() end,
+    },
     capabilities = {
       textDocument = {
         -- Disable what FREE intelephense provides
