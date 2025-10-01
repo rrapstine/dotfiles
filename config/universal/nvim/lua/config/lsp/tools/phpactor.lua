@@ -15,6 +15,7 @@ return {
         documentSymbol = nil,
         formatting = nil,
         rangeFormatting = nil,
+        publishDiagnostics = nil,
 
         -- KEEP what FREE intelephense lacks (premium features)
         foldingRange = {
@@ -58,10 +59,6 @@ return {
         symbol = nil, -- intelephense handles this
       },
     },
-
-    on_attach = function(client, bufnr)
-      print('Phpactor LSP started (providing premium features: implementation, declaration, rename, type definition, folding, refactoring)')
-    end,
 
     settings = {
       phpactor = {
