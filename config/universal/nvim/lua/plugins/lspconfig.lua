@@ -23,10 +23,7 @@ return {
       })
 
       -- Get capabilities from blink.cmp, starting with default LSP capabilities
-      local capabilities = vim.tbl_deep_extend('force', 
-        vim.lsp.protocol.make_client_capabilities(),
-        require('blink.cmp').get_lsp_capabilities()
-      )
+      local capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), require('blink.cmp').get_lsp_capabilities())
 
       -- Configure each LSP server BEFORE mason-lspconfig setup
       for _, tool in ipairs(tools_config.lsp_tools) do
@@ -39,7 +36,7 @@ return {
 
       -- Setup mason-lspconfig with automatic enabling (this will enable servers that have configs)
       require('mason-lspconfig').setup({
-        ensure_installed = tools_config.mason_tools,
+        -- ensure_installed = tools_config.mason_tools,
         automatic_enable = true,
       })
 
