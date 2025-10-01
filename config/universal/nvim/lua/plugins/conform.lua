@@ -2,11 +2,12 @@ return {
   'stevearc/conform.nvim',
 
   config = function()
-    local ft_map, formatter_defs = require('config.lsp.tools').get_conform_config()
+    local lsp_utils = require('config.lsp.utils')
+    local tools_config = lsp_utils.discover_tools()
 
     require('conform').setup({
-      formatters_by_ft = ft_map,
-      formatters = formatter_defs,
+      formatters_by_ft = tools_config.formatters_by_ft,
+      formatters = tools_config.formatter_configs,
       format_after_save = {
         async = true,
         timeout_ms = 500,

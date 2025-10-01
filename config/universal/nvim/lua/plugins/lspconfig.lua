@@ -13,25 +13,34 @@ return {
       'saghen/blink.cmp',
     },
     config = function()
-      local mason_tools = require('config.lsp.tools')
-      local ensure_installed = mason_tools.get_mason_config()
-      local lsp_configs = mason_tools.get_lspconfig_servers()
+      local lsp_utils = require('config.lsp.utils')
+      local tools_config = lsp_utils.discover_tools()
 
       require('mason-tool-installer').setup({
-        ensure_installed = ensure_installed,
+        ensure_installed = tools_config.mason_tools,
         run_on_start = true,
         auto_update = false,
       })
 
+      -- Get capabilities from blink.cmp, starting with default LSP capabilities
+      local capabilities = vim.tbl_deep_extend('force', 
+        vim.lsp.protocol.make_client_capabilities(),
+        require('blink.cmp').get_lsp_capabilities()
+      )
+
+      -- Configure each LSP server BEFORE mason-lspconfig setup
+      for _, tool in ipairs(tools_config.lsp_tools) do
+        local server_opts = tool.opts or {}
+        -- Add blink.cmp capabilities
+        server_opts.capabilities = vim.tbl_deep_extend('force', capabilities, server_opts.capabilities or {})
+        -- Configure the server (this must happen before automatic enabling)
+        vim.lsp.config(tool.name, server_opts)
+      end
+
+      -- Setup mason-lspconfig with automatic enabling (this will enable servers that have configs)
       require('mason-lspconfig').setup({
-        ensure_installed = {}, -- this is handled by mason-tool-installer
+        ensure_installed = tools_config.mason_tools,
         automatic_enable = true,
-        handlers = {
-          function(server_name)
-            local custom_opts = lsp_configs[server_name] or {}
-            lspconfig[server_name].setup(custom_opts)
-          end,
-        },
       })
 
       -- [[ Keymaps ]]
