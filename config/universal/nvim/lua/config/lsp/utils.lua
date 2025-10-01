@@ -33,8 +33,10 @@ function M.discover_tools()
       goto continue
     end
 
-    -- Add ALL tools to mason_tools list for installation (regardless of role)
-    table.insert(result.mason_tools, tool_name)
+    -- Add to mason_tools list only if not explicitly skipped
+    if not tool_config.skip_mason then
+      table.insert(result.mason_tools, tool_name)
+    end
 
     -- Process each role
     for _, role in ipairs(tool_config.roles) do
