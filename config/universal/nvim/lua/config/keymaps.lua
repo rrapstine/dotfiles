@@ -64,9 +64,6 @@ keys.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 keys.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- Open terminal mode in a vertical split
-keys.set('n', '<leader>tt', '<cmd>vsplit | terminal<CR>', { desc = 'Open terminal in a vertical split' })
-
 -- Exit terminal mode easier
 keys.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
@@ -75,6 +72,16 @@ keys.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 keys.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 keys.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 keys.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Close current buffer without closing window
+keys.set('n', '<leader>bd', function()
+  local buf = vim.api.nvim_get_current_buf()
+  -- If there's only one buffer, create a new one first
+  if #vim.fn.getbufinfo({ buflisted = 1 }) == 1 then
+    vim.cmd('enew')
+  end
+  vim.cmd('bdelete!' .. buf)
+end, { desc = '[B]uffer [D]elete' })
 
 -- [[ Basic AutoCommands ]]
 
