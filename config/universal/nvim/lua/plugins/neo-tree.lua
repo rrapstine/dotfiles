@@ -5,6 +5,7 @@ return {
     'nvim-lua/plenary.nvim',
     'nvim-tree/nvim-web-devicons',
     'MunifTanjim/nui.nvim',
+    'folke/edgy.nvim',
   },
   lazy = false,
   keys = {
@@ -14,7 +15,7 @@ return {
     reveal = true,
     close_if_last_window = true,
     enable_cursor_hijack = true,
-    open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf' },
+    open_files_do_not_replace_types = { 'terminal', 'trouble', 'qf', 'edgy' },
     filesystem = {
       window = {
         position = 'right',
