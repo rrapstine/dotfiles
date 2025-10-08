@@ -1,13 +1,30 @@
 return {
+  enabled = true,
   roles = { 'lsp' },
   lsp = {
-    filetypes = { 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
-    root_dir = vim.fs.root(0, { 'package.json', '.git' }),
     settings = {
       vtsls = {
         autoUseWorkspaceTsdk = true,
+        typescript = {
+          tsserver = {
+            useSyntaxServer = 'always',
+            -- These might be needed for proper JSX highlighting
+            preferences = {
+              includePackageJsonAutoImports = 'on',
+            },
+            -- Enable semantic highlighting features
+            semanticHighlighting = {
+              enabled = true,
+            },
+          },
+        },
+        -- Additional vtsls-specific settings that might be needed
+        javascript = {
+          suggestions = {
+            completeFunctionCalls = true,
+          },
+        },
       },
     },
   },
 }
-

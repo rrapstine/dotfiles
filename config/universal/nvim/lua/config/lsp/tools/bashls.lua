@@ -1,6 +1,9 @@
 return {
   roles = { 'lsp' },
   lsp = {
-    filetypes = { 'sh', 'bash' },
+    -- Using nvim-lspconfig defaults:
+    -- - filetypes: { 'bash', 'sh' }
+    -- - root_markers: { '.git' }
+    -- - settings: bashIde.globPattern customization already handled by defaults
   }
 }

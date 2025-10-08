@@ -1,6 +1,9 @@
 return {
   roles = { 'lsp' },
   lsp = {
-    filetypes = { 'dockerfile' },
+    -- Using nvim-lspconfig defaults:
+    -- - filetypes: { 'dockerfile' }
+    -- - root_markers: { 'Dockerfile' }
+    -- - cmd: { 'docker-langserver', '--stdio' }
   }
 }
