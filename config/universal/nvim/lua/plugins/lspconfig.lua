@@ -1,8 +1,17 @@
 return {
   {
     'neovim/nvim-lspconfig',
+    -- Lazy load on actual file operations, not just VimEnter
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
-      { 'mason-org/mason.nvim', opts = {} },
+      {
+        'mason-org/mason.nvim',
+        opts = {},
+        -- Mason should load slightly later, after UI is ready
+        event = 'VeryLazy',
+        -- Optional: Only load Mason when actually needed
+        cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUpdate' },
+      },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -16,25 +25,23 @@ return {
       local lsp_utils = require('config.lsp.utils')
       local tools_config = lsp_utils.discover_tools()
 
+      -- Bring in mason-lspconfig
+      require('mason-lspconfig').setup()
+
       require('mason-tool-installer').setup({
         ensure_installed = tools_config.mason_tools,
         run_on_start = true,
         auto_update = false,
       })
 
-      -- Configure each LSP server BEFORE mason-lspconfig setup
+      -- Configure each LSP server before setup, then enable it
       for _, tool in ipairs(tools_config.lsp_tools) do
         local server_opts = tool.opts or {}
 
-        -- Configure the server (this must happen before automatic enabling)
+        -- Load user config and enable the server
         vim.lsp.config(tool.name, server_opts)
+        vim.lsp.enable(tool.name)
       end
-
-      -- Setup mason-lspconfig with automatic enabling (this will enable servers that have configs)
-      require('mason-lspconfig').setup({
-        -- ensure_installed = tools_config.mason_tools,
-        automatic_enable = true,
-      })
 
       -- Check if the client supports document highlight. Enable it if it does.
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -42,8 +49,13 @@ return {
         callback = function(event)
           local client = vim.lsp.get_client_by_id(event.data.client_id)
 
+          -- Skip null-ls and other non-code servers
+          if not client or client.name == 'null-ls' then
+            return
+          end
+
           -- If THIS client supports highlighting, enable it (once)
-          if client and client:supports_method('textDocument/documentHighlight', event.buf) then
+          if client:supports_method('textDocument/documentHighlight', event.buf) then
             -- Check if already enabled for this buffer
             if not vim.b[event.buf].lsp_highlight_enabled then
               vim.b[event.buf].lsp_highlight_enabled = true
@@ -78,6 +90,25 @@ return {
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('user-lsp-keymaps', { clear = true }),
         callback = function(event)
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+          -- Skip null-ls and other non-code servers
+          if not client or client.name == 'null-ls' then
+            return
+          end
+
+          -- Enable basic semantic token highlighting (language-agnostic)
+          if client:supports_method('textDocument/semanticTokens') then
+            vim.api.nvim_set_hl(0, '@lsp.type.function', { link = 'Function' })
+            vim.api.nvim_set_hl(0, '@lsp.type.variable', { link = 'Identifier' })
+            vim.api.nvim_set_hl(0, '@lsp.type.parameter', { link = 'Identifier' })
+            vim.api.nvim_set_hl(0, '@lsp.type.method', { link = 'Function' })
+            vim.api.nvim_set_hl(0, '@lsp.type.property', { link = 'Identifier' })
+            vim.api.nvim_set_hl(0, '@lsp.type.class', { link = 'Type' })
+            vim.api.nvim_set_hl(0, '@lsp.type.interface', { link = 'Type' })
+            vim.api.nvim_set_hl(0, '@lsp.type.enum', { link = 'Type' })
+          end
+
           -- Skip if keymaps already set for this buffer
           if vim.b[event.buf].lsp_keymaps_set then
             return
@@ -86,42 +117,29 @@ return {
           -- Mark this buffer as having keymaps set
           vim.b[event.buf].lsp_keymaps_set = true
 
-          local map = function(keys, func, desc, mode)
-            mode = mode or 'n'
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          -- Batch keymap setup for better performance
+          local lsp_maps = {
+            { 'grn', vim.lsp.buf.rename, '[R]e[n]ame' },
+            { 'gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' } },
+            { 'grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences' },
+            { 'gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation' },
+            { 'grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition' },
+            { 'grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration' },
+            { 'gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols' },
+            { 'gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols' },
+            { 'grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition' },
+            {
+              '<leader>th',
+              function()
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
+              end,
+              '[T]oggle Inlay [H]ints',
+            },
+          }
+
+          for _, map in ipairs(lsp_maps) do
+            vim.keymap.set(map[4] or 'n', map[1], map[2], { buffer = event.buf, desc = 'LSP: ' .. map[3] })
           end
-
-          -- Rename the variable under your cursor.
-          map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
-
-          -- Execute a code action
-          map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-
-          -- Find references for the word under your cursor.
-          map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-
-          -- Jump to the implementation of the word under your cursor.
-          map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-
-          -- Jump to the definition of the word under your cursor.
-          map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-
-          -- Fuzzy find all the symbols in your current document.
-          map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
-
-          -- Fuzzy find all the symbols in your current workspace.
-          map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
-
-          -- Jump to the type of the word under your cursor.
-          map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
-
-          -- Toggle hints inlaid in the code
-          map('<leader>th', function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-          end, '[T]oggle Inlay [H]ints')
         end,
       })
 
