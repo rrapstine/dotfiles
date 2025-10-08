@@ -1,5 +1,6 @@
 .aider*
 .DS_Store
+tmp/*
 
 # Ignore all tmux plugins except TPM itself
 config/universal/tmux/plugins/*
