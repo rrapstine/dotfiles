@@ -7,7 +7,7 @@ return {
         autoUseWorkspaceTsdk = true,
         typescript = {
           tsserver = {
-            useSyntaxServer = 'always',
+            useSyntaxServer = 'auto',
             -- These might be needed for proper JSX highlighting
             preferences = {
               includePackageJsonAutoImports = 'on',

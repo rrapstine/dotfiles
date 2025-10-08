@@ -1,16 +1,10 @@
 return {
   {
     'neovim/nvim-lspconfig',
-    -- Lazy load on actual file operations, not just VimEnter
-    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       {
         'mason-org/mason.nvim',
         opts = {},
-        -- Mason should load slightly later, after UI is ready
-        event = 'VeryLazy',
-        -- Optional: Only load Mason when actually needed
-        cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUpdate' },
       },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
@@ -97,16 +91,9 @@ return {
             return
           end
 
-          -- Enable basic semantic token highlighting (language-agnostic)
-          if client:supports_method('textDocument/semanticTokens') then
-            vim.api.nvim_set_hl(0, '@lsp.type.function', { link = 'Function' })
-            vim.api.nvim_set_hl(0, '@lsp.type.variable', { link = 'Identifier' })
-            vim.api.nvim_set_hl(0, '@lsp.type.parameter', { link = 'Identifier' })
-            vim.api.nvim_set_hl(0, '@lsp.type.method', { link = 'Function' })
-            vim.api.nvim_set_hl(0, '@lsp.type.property', { link = 'Identifier' })
-            vim.api.nvim_set_hl(0, '@lsp.type.class', { link = 'Type' })
-            vim.api.nvim_set_hl(0, '@lsp.type.interface', { link = 'Type' })
-            vim.api.nvim_set_hl(0, '@lsp.type.enum', { link = 'Type' })
+          -- Skip null-ls and other non-code servers
+          if not client or client.name == 'null-ls' then
+            return
           end
 
           -- Skip if keymaps already set for this buffer

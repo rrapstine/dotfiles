@@ -19,12 +19,12 @@ local function fix_float_background()
 
   -- Get the current normal background color
   local normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal' })
-  local normal_bg = normal_hl.bg or "NONE"
-  
+  local normal_bg = normal_hl.bg or 'NONE'
+
   -- Skip if background hasn't changed, but still apply to existing windows
   local background_changed = (last_normal_bg ~= normal_bg)
   last_normal_bg = normal_bg
-  
+
   -- Only update highlight groups if background actually changed
   if background_changed then
     -- Force all floating window highlights to use normal background (NvChad approach)
@@ -96,54 +96,54 @@ function M.setup()
 
   -- Apply fix immediately
   fix_float_background()
-  
+
   -- Reapply after colorscheme changes
-  vim.api.nvim_create_autocmd('ColorScheme', { 
+  vim.api.nvim_create_autocmd('ColorScheme', {
     callback = function()
       vim.defer_fn(fix_float_background, 50)
-    end
+    end,
   })
-  
+
   -- Apply when specific plugins open their windows
   vim.api.nvim_create_autocmd('FileType', {
-    pattern = {'TelescopePrompt', 'lazy', 'mason', 'cmp_menu', 'DressingInput', 'DressingSelect'},
-    callback = fix_float_background
+    pattern = { 'TelescopePrompt', 'lazy', 'mason', 'cmp_menu', 'DressingInput', 'DressingSelect' },
+    callback = fix_float_background,
   })
-  
+
   -- Also apply to completion menu and dialog windows
   vim.api.nvim_create_autocmd('MenuPopup', {
-    callback = fix_float_background
+    callback = fix_float_background,
   })
-  
+
   vim.api.nvim_create_autocmd('CmdlineEnter', {
-    callback = fix_float_background
+    callback = fix_float_background,
   })
-  
+
   -- Aggressive catch-all for any popup creation
   vim.api.nvim_create_autocmd('BufWinEnter', {
     callback = function()
       if vim.fn.win_gettype() == 'popup' or vim.fn.win_gettype() == 'float' then
         vim.defer_fn(fix_float_background, 10)
       end
-    end
+    end,
   })
-  
+
   -- Aggressive catch-all for any popup creation
   vim.api.nvim_create_autocmd('BufWinEnter', {
     callback = function()
       if vim.fn.win_gettype() == 'popup' or vim.fn.win_gettype() == 'float' then
         vim.defer_fn(fix_float_background, 10)
       end
-    end
+    end,
   })
-  
+
   -- Apply to any floating window creation (lightweight)
   vim.api.nvim_create_autocmd('WinNew', {
     callback = function()
       if vim.fn.win_gettype() == 'popup' or vim.fn.win_gettype() == 'float' then
         vim.wo.winhighlight = 'Normal:Normal,NormalFloat:Normal,FloatBorder:Normal'
       end
-    end
+    end,
   })
 end
 
@@ -151,11 +151,11 @@ end
 function M.toggle()
   ENABLED = not ENABLED
   if ENABLED then
-    last_normal_bg = nil  -- Reset cache when re-enabling
+    last_normal_bg = nil -- Reset cache when re-enabling
     fix_float_background()
-    vim.notify("Floating window background fix: ENABLED", "info")
+    vim.notify('Floating window background fix: ENABLED', 'info')
   else
-    vim.notify("Floating window background fix: DISABLED", "warn")
+    vim.notify('Floating window background fix: DISABLED', 'warn')
   end
 end
 
@@ -165,3 +165,4 @@ vim.defer_fn(function()
 end, 100)
 
 return M
+
