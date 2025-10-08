@@ -21,6 +21,8 @@ vim.opt.signcolumn = 'yes'
 vim.opt.cursorline = true
 vim.opt.colorcolumn = '80'
 vim.opt.showmode = false
+vim.opt.winborder = 'rounded'
+vim.opt.pumblend = 10
 
 -- Line numbers
 vim.opt.number = true
