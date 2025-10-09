@@ -1,0 +1,223 @@
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃               AeroSpace Main Configuration                  ┃
+# ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+# AeroSpace configuration inspired by Hyprland setup
+# Main modifier: Alt (Option) to avoid macOS conflicts
+
+# Start AeroSpace at login
+start-at-login = true
+
+# Normalizations - keep enabled for better tree structure
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Layout configuration
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+accordion-padding = 30
+
+# Mouse follows focus when focused monitor changes
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Automatically unhide macOS hidden apps (useful for cmd-h conflicts)
+automatically-unhide-macos-hidden-apps = false
+
+# Key mapping preset
+[key-mapping]
+    preset = 'qwerty'
+
+# Gaps configuration matching Hyprland
+[gaps]
+    inner.horizontal = 3
+    inner.vertical = 3
+    outer.left = 5
+    outer.bottom = 5
+    outer.top = 5
+    outer.right = 5
+
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃                      Window Rules                           ┃
+# ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+# Browser workspace assignments
+[[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'org.mozilla.firefoxdeveloperedition'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'app.zen-browser.zen'
+run = 'move-node-to-workspace 1'
+
+# Terminal workspace assignments
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'com.github.wez.wezterm'
+run = 'move-node-to-workspace 2'
+
+# Games workspace assignments
+[[on-window-detected]]
+if.app-id = 'com.valvesoftware.steam'
+run = 'move-node-to-workspace 3'
+
+# Social workspace assignments
+[[on-window-detected]]
+if.app-id = 'com.apple.messages'
+run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = 'move-node-to-workspace 4'
+
+# Media workspace assignments
+[[on-window-detected]]
+if.app-id = 'com.spotify.client'
+run = 'move-node-to-workspace 6'
+
+# Floating window rules for system dialogs
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = 'layout floating'
+
+# General floating rules for dialog-like windows
+[[on-window-detected]]
+check-further-callbacks = true
+if.window-title-regex-substring = 'picture in picture'
+run = 'layout floating'
+
+[[on-window-detected]]
+check-further-callbacks = true
+if.window-title-regex-substring = 'save file'
+run = 'layout floating'
+
+[[on-window-detected]]
+check-further-callbacks = true
+if.window-title-regex-substring = 'open file'
+run = 'layout floating'
+
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃                       Key Bindings                          ┃
+# ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+# Main binding mode - MUST override all default letter bindings
+[mode.main.binding]
+
+# Application launchers
+alt-enter = 'exec-and-forget open -n /Applications/WezTerm.app'
+alt-b = 'exec-and-forget open -n /Applications/Safari.app'
+alt-e = 'exec-and-forget open -n /Applications/Finder.app'
+
+# Window management
+alt-q = 'close'
+alt-f = 'fullscreen'
+alt-space = 'layout floating tiling'
+
+# Focus navigation (vi-style + arrow keys)
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+alt-left = 'focus left'
+alt-down = 'focus down'
+alt-up = 'focus up'
+alt-right = 'focus right'
+
+# Window movement
+alt-shift-h = 'move left'
+alt-shift-j = 'move down'
+alt-shift-k = 'move up'
+alt-shift-l = 'move right'
+alt-shift-left = 'move left'
+alt-shift-down = 'move down'
+alt-shift-up = 'move up'
+alt-shift-right = 'move right'
+
+# Window resizing
+alt-minus = 'resize smart -50'
+alt-equal = 'resize smart +50'
+
+# Layout switching
+alt-slash = 'layout tiles horizontal vertical'
+
+# Workspace switching - ONLY numeric workspaces
+alt-1 = 'workspace 1'  # Browser
+alt-2 = 'workspace 2'  # Terminal
+alt-3 = 'workspace 3'  # Games
+alt-4 = 'workspace 4'  # Social
+alt-5 = 'workspace 5'  # Misc
+alt-6 = 'workspace 6'  # Media
+
+# Workspace navigation
+alt-period = 'workspace next'
+alt-comma = 'workspace prev'
+alt-tab = 'workspace-back-and-forth'
+
+# Move window to workspace
+alt-shift-1 = 'move-node-to-workspace 1'
+alt-shift-2 = 'move-node-to-workspace 2'
+alt-shift-3 = 'move-node-to-workspace 3'
+alt-shift-4 = 'move-node-to-workspace 4'
+alt-shift-5 = 'move-node-to-workspace 5'
+alt-shift-6 = 'move-node-to-workspace 6'
+
+# Move window to workspace and follow
+alt-ctrl-1 = ['move-node-to-workspace 1', 'workspace 1']
+alt-ctrl-2 = ['move-node-to-workspace 2', 'workspace 2']
+alt-ctrl-3 = ['move-node-to-workspace 3', 'workspace 3']
+alt-ctrl-4 = ['move-node-to-workspace 4', 'workspace 4']
+alt-ctrl-5 = ['move-node-to-workspace 5', 'workspace 5']
+alt-ctrl-6 = ['move-node-to-workspace 6', 'workspace 6']
+
+# Service mode entry
+alt-shift-semicolon = 'mode service'
+
+# Resize mode entry
+alt-r = 'mode resize'
+
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃                       Binding Modes                         ┃
+# ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+# Resize mode
+[mode.resize.binding]
+h = 'resize width -50'
+j = 'resize height +50'
+k = 'resize height -50'
+l = 'resize width +50'
+left = 'resize width -50'
+down = 'resize height +50'
+up = 'resize height -50'
+right = 'resize width +50'
+enter = 'mode main'
+esc = 'mode main'
+alt-r = 'mode main'
+
+# Service mode (for advanced operations)
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main']
+f = ['layout floating tiling', 'mode main']
+backspace = ['close-all-windows-but-current', 'mode main']
+t = ['layout tiles', 'mode main']
+a = ['layout accordion', 'mode main']
+
+# Join operations (container manipulation)
+alt-shift-h = ['join-with left', 'mode main']
+alt-shift-j = ['join-with down', 'mode main']
+alt-shift-k = ['join-with up', 'mode main']
+alt-shift-l = ['join-with right', 'mode main']
