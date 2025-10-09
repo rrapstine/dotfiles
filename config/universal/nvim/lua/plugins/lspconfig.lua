@@ -28,6 +28,11 @@ return {
         auto_update = false,
       })
 
+      -- Lower semantic token priority so Treesitter handles syntax highlighting
+      -- This fixes TSX/JSX HTML element highlighting issues where semantic tokens
+      -- from vtsls don't include HTML tag types, causing them to be unhighlighted
+      vim.highlight.priorities.semantic_tokens = 95
+
       -- Configure each LSP server before setup, then enable it
       for _, tool in ipairs(tools_config.lsp_tools) do
         local server_opts = tool.opts or {}
