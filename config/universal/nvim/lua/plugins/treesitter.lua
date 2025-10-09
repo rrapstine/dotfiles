@@ -28,17 +28,25 @@ return {
       },
     })
     
-    -- Enable Treesitter highlighting (Neovim 0.11+ built-in)
+    -- Enable Treesitter highlighting and indentation (Neovim 0.11+)
     vim.api.nvim_create_autocmd({'FileType', 'BufEnter'}, {
-      group = vim.api.nvim_create_augroup('treesitter_highlight', { clear = true }),
+      group = vim.api.nvim_create_augroup('treesitter_enable', { clear = true }),
       callback = function(args)
         local buf = args.buf
-        -- Only enable for parsers that exist
         local ft = vim.bo[buf].filetype
+        
         if ft and ft ~= '' then
-          local ok = pcall(vim.treesitter.start, buf)
-          if not ok then
-            -- Parser doesn't exist for this filetype, that's fine
+          -- Enable Treesitter highlighting (built-in to Neovim 0.11+)
+          pcall(vim.treesitter.start, buf)
+          
+          -- Enable Treesitter indentation (from nvim-treesitter plugin)
+          -- Only set if we have a valid parser and indent queries
+          local lang = vim.treesitter.language.get_lang(ft)
+          if lang then
+            local ok, _ = pcall(vim.treesitter.query.get, lang, 'indents')
+            if ok then
+              vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
           end
         end
       end,
