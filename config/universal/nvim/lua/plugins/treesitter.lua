@@ -1,10 +1,11 @@
 return {
   'nvim-treesitter/nvim-treesitter',
   lazy = false,
+  priority = 1000,  -- Load early
   branch = 'main',
   build = ':TSUpdate',
   config = function()
-    require('nvim-treesitter.configs').setup({
+    require('nvim-treesitter').setup({
       sync_install = false,
       auto_install = true,
       ignore_install = {},
