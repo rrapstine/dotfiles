@@ -1,10 +1,10 @@
 return {
   'nvim-treesitter/nvim-treesitter',
   lazy = false,
-  priority = 1000,  -- Load early
   branch = 'main',
   build = ':TSUpdate',
   config = function()
+    -- Configure nvim-treesitter (for parser installation)
     require('nvim-treesitter').setup({
       sync_install = false,
       auto_install = true,
@@ -26,13 +26,22 @@ return {
         'tsx',
         'yaml',
       },
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = {
-        enable = true,
-      },
+    })
+    
+    -- Enable Treesitter highlighting (Neovim 0.11+ built-in)
+    vim.api.nvim_create_autocmd({'FileType', 'BufEnter'}, {
+      group = vim.api.nvim_create_augroup('treesitter_highlight', { clear = true }),
+      callback = function(args)
+        local buf = args.buf
+        -- Only enable for parsers that exist
+        local ft = vim.bo[buf].filetype
+        if ft and ft ~= '' then
+          local ok = pcall(vim.treesitter.start, buf)
+          if not ok then
+            -- Parser doesn't exist for this filetype, that's fine
+          end
+        end
+      end,
     })
   end,
 }

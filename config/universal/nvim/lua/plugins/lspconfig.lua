@@ -96,11 +96,6 @@ return {
             return
           end
 
-          -- Skip null-ls and other non-code servers
-          if not client or client.name == 'null-ls' then
-            return
-          end
-
           -- Skip if keymaps already set for this buffer
           if vim.b[event.buf].lsp_keymaps_set then
             return
