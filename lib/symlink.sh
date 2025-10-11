@@ -16,6 +16,7 @@ create_symlinks() {
         log_info "Auto-discovering bin scripts..."
         for script in "$DOTFILES_ROOT/bin"/*; do
             [[ -f "$script" ]] || continue
+
             local script_name="$(basename "$script")"
             create_symlink "bin/$script_name" "$HOME/.local/bin/$script_name"
         done
@@ -27,7 +28,7 @@ create_symlinks() {
             [[ -d "$config_dir" ]] || continue
             local config_name="$(basename "$config_dir")"
             auto_link_config "config/universal/$config_name" "$config_name"
-            
+
             # Post-symlink hooks
             if [[ "$config_name" == "bat" ]] && command -v bat &> /dev/null; then
                 log_info "Rebuilding bat cache with themes..."
@@ -221,9 +222,9 @@ create_single_config_symlink() {
     local config_name="$1"
     local config_category="$2"
     local detected_os="$3"
-    
+
     log_info "Installing configuration: $config_name ($config_category)"
-    
+
     case "$config_category" in
         universal)
             auto_link_config "config/universal/$config_name" "$config_name"
@@ -249,9 +250,9 @@ create_single_config_symlink() {
 
 clean_broken_symlinks() {
     log_info "Cleaning broken symlinks..."
-    
+
     local broken_count=0
-    
+
     # Clean broken symlinks in ~/.local/bin
     if [[ -d "$HOME/.local/bin" ]]; then
         while IFS= read -r -d '' symlink; do
@@ -262,7 +263,7 @@ clean_broken_symlinks() {
             fi
         done < <(find "$HOME/.local/bin" -type l -print0 2>/dev/null)
     fi
-    
+
     # Clean broken symlinks in ~/.config
     if [[ -d "$HOME/.config" ]]; then
         while IFS= read -r -d '' symlink; do
@@ -273,7 +274,7 @@ clean_broken_symlinks() {
             fi
         done < <(find "$HOME/.config" -type l -print0 2>/dev/null)
     fi
-    
+
     if [[ $broken_count -eq 0 ]]; then
         log_success "No broken symlinks found"
     else
