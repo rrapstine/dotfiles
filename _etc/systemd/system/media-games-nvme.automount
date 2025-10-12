@@ -1,0 +1,9 @@
+[Unit]
+Description=Automount NVMe Games Drive
+
+[Automount]
+Where=/media/games/nvme
+TimeoutIdleSec=300
+
+[Install]
+WantedBy=multi-user.target

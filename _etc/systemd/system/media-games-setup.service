@@ -1,0 +1,14 @@
+[Unit]
+Description=Create Games Mount Points
+Before=media-games-ssd.mount media-games-nvme.mount
+DefaultDependencies=no
+ConditionPathExists=!/media/games
+
+[Service]
+Type=oneshot
+ExecStart=/bin/mkdir -p /media/games/ssd /media/games/nvme
+ExecStart=/bin/chown -R richard:richard /media/games
+ExecStart=/bin/chmod 755 /media/games /media/games/ssd /media/games/nvme
+
+[Install]
+WantedBy=local-fs.target
