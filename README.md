@@ -17,6 +17,20 @@ This repository contains my cross-platform dotfiles setup that works seamlessly 
 
 ## 🚀 Quick Start
 
+### One-Command Bootstrap (Recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/rrapstine/dotfiles/main/bootstrap.sh | bash
+```
+
+The bootstrap script will:
+- Check for git installation and provide instructions if needed
+- Prompt for installation location (defaults to `~/Code/dotfiles`)
+- Handle existing installations gracefully
+- Run the full setup automatically
+
+### Manual Setup
+
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/rrapstine/dotfiles.git ~/.dotfiles

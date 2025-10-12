@@ -12,7 +12,7 @@ source "$DOTFILES_ROOT/lib/detect.sh"
 
 print_banner() {
     echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                  Dotfiles Initial Setup                     ║"
+    echo "║                  Dotfiles Initial Setup                      ║"
     echo "║                 First-Time Installation                      ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
     echo
@@ -51,22 +51,22 @@ ensure_directories() {
     # Create necessary directories
     mkdir -p "$HOME/.local/bin"
     mkdir -p "$HOME/.config"
-    
+
     log_info "Created necessary directories"
 }
 
 setup_cli_tool() {
     local dotfiles_script="$DOTFILES_ROOT/bin/dotfiles"
     local target="$HOME/.local/bin/dotfiles"
-    
+
     if [[ ! -f "$dotfiles_script" ]]; then
         log_error "Dotfiles CLI script not found: $dotfiles_script"
         exit 1
     fi
-    
+
     # Make it executable
     chmod +x "$dotfiles_script"
-    
+
     # Create symlink if it doesn't exist or points to wrong location
     if [[ -L "$target" && "$(readlink "$target")" == "$dotfiles_script" ]]; then
         log_info "Dotfiles CLI already linked: $target"
@@ -75,7 +75,7 @@ setup_cli_tool() {
             log_warn "Existing file at $target - backing up"
             mv "$target" "$target.backup.$(date +%Y%m%d_%H%M%S)"
         fi
-        
+
         log_info "Creating dotfiles CLI symlink: $target -> $dotfiles_script"
         ln -sf "$dotfiles_script" "$target"
         log_success "Dotfiles CLI installed successfully!"
@@ -132,15 +132,15 @@ main() {
 
     # Build arguments for dotfiles CLI
     local dotfiles_args=("install")
-    
+
     if [[ -n "$forced_os" ]]; then
         dotfiles_args+=("--os" "$forced_os")
     fi
-    
+
     if [[ "$symlinks_only" == true ]]; then
         dotfiles_args+=("--symlinks-only")
     fi
-    
+
     if [[ "$dry_run" == true ]]; then
         dotfiles_args+=("--dry-run")
     fi
@@ -156,7 +156,7 @@ main() {
         "$DOTFILES_ROOT/bin/dotfiles" "${dotfiles_args[@]}" 2>/dev/null || true
     else
         "$DOTFILES_ROOT/bin/dotfiles" "${dotfiles_args[@]}"
-        
+
         echo
         log_success "Setup completed successfully!"
         echo
