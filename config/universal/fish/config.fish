@@ -21,3 +21,6 @@ set fish_greeting
 # Initialize starship.
 starship init fish | source
 enable_transience
+
+# opencode
+fish_add_path /home/richard/.opencode/bin
