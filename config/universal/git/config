@@ -3,7 +3,7 @@
 	email = richard.rapstine@gmail.com
 
 [init]
-	defaultBranch = main
+	defaultBranch = master
 
 [core]
 	excludesFile = ~/.config/git/ignore
