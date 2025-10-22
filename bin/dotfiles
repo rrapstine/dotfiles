@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# =============================================================================
 # Script Name : dotfiles
-# Description : CLI interface for managing dotfiles configuration
+# Description : Simple CLI interface for managing dotfiles configuration
+# =============================================================================
 
 set -e
 
@@ -12,510 +14,67 @@ DOTFILES_ROOT="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
 source "$DOTFILES_ROOT/lib/detect.sh"
 source "$DOTFILES_ROOT/lib/symlink.sh"
 
-print_banner() {
-    echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                      Dotfiles Manager                        ║"
-    echo "║                   CLI Configuration Tool                     ║"
-    echo "╚══════════════════════════════════════════════════════════════╝"
-    echo
-}
-
-show_help() {
-    local command="$1"
-
+# Command router
+main() {
+    local command="${1:-setup}"
+    local target="${2:-}"
+    
     case "$command" in
-        install)
-            cat << EOF
-Usage: dotfiles install [config] [options]
-
-Install dotfiles configuration and create symlinks.
-
-Arguments:
-    config                      Optional: Install specific configuration only (e.g., hypr, nvim, fish)
-                               If omitted, installs all configurations
-
-Options:
-    -o, --os OS                 Force specific OS (macos, arch)
-        --symlinks-only         Only create symlinks, skip package installation
-        --no-symlinks           Skip symlink creation
-        --dry-run               Show what would be done without making changes
-
-Examples:
-    dotfiles install                    # Auto-detect OS and install everything
-    dotfiles install hypr               # Install only hypr configuration
-    dotfiles install nvim --os arch     # Install nvim with forced OS
-    dotfiles install fish --symlinks-only    # Install fish symlinks only
-    dotfiles install --dry-run          # Preview changes without applying them
-
-Note: When installing OS-specific configs (like hypr) on a different OS, you'll be prompted for confirmation.
-
-EOF
-            ;;
-        remove)
-            cat << EOF
-Usage: dotfiles remove <config|all>
-
-Remove symlinks for specific configuration or all configurations.
-
-Arguments:
-    config                      Name of specific config to remove (e.g., nvim, fish)
-    all                         Remove all dotfiles symlinks
-
-Examples:
-    dotfiles remove nvim                # Remove nvim config symlinks
-    dotfiles remove fish                # Remove fish config symlinks
-    dotfiles remove all                 # Remove all dotfiles symlinks
-
-Note: This only removes symlinks, not the source configuration files.
-
-EOF
-            ;;
-        clean)
-            cat << EOF
-Usage: dotfiles clean
-
-Remove broken symlinks from ~/.local/bin and ~/.config directories.
-
-This command finds and removes symlinks that point to non-existent files,
-which can happen when config files are moved or deleted.
-
-Examples:
-    dotfiles clean                      # Clean up broken symlinks
-
-EOF
-            ;;
-        status)
-            cat << EOF
-Usage: dotfiles status
-
-Show current symlink status for all configurations.
-
-This command displays which configurations are currently linked and which
-are available but not linked.
-
-Examples:
-    dotfiles status                     # Show current symlink status
-
-EOF
-            ;;
-        list)
-            cat << EOF
-Usage: dotfiles list
-
-Show all available configurations that can be installed.
-
-This command lists all bin scripts and config directories available
-for symlinking, organized by category (universal, OS-specific, etc.).
-
-Examples:
-    dotfiles list                       # Show available configurations
-
-EOF
-            ;;
-        edit)
-            cat << EOF
-Usage: dotfiles edit [config]
-
-Open dotfiles directory or specific configuration in your editor.
-
-Arguments:
-    config                      Name of specific config to edit (e.g., nvim, fish)
-                               If omitted, opens entire dotfiles directory
-
-Examples:
-    dotfiles edit                       # Open entire dotfiles directory
-    dotfiles edit nvim                  # Edit nvim configuration
-    dotfiles edit fish                  # Edit fish configuration
-    dotfiles edit hypr                  # Edit hyprland configuration
-
-Note: Requires \$EDITOR environment variable to be set.
-
-EOF
-            ;;
-        dns)
-            cat << EOF
-Usage: dotfiles dns <setup|remove|status>
-
-Manage .test domain DNS resolution for local development.
-
-Commands:
-    setup                       Configure .test domain resolution to localhost
-    remove                      Remove DNS configuration and restore defaults
-    status                      Check current DNS setup status
-
-Examples:
-    dotfiles dns setup                  # Setup .test domain resolution
-    dotfiles dns status                 # Check if DNS is working
-    dotfiles dns remove                 # Remove DNS configuration
-
-After setup, you can use domains like:
-    myproject.test:3000                 # Your local development server
-    api.test:8080                       # Local API server
-    frontend.test                       # Any .test domain resolves to 127.0.0.1
-
-Supported platforms: macOS, Arch Linux, and other systemd-resolved Linux distros
-
-EOF
-            ;;
-        *)
-            cat << EOF
-Usage: dotfiles <command> [options]
-
-Commands:
-    install [config] [options]  Install dotfiles configuration (optionally specific config)
-    remove <config|all>         Remove symlinks for specific config or all
-    clean                       Remove broken symlinks
-    status                      Show current symlink status
-    list                        Show available configurations
-    edit [config]               Open dotfiles or specific config in editor
-    dns <setup|remove|status>   Manage .test domain DNS resolution
-    help [command]              Show help for specific command
-
-Install Options:
-    -o, --os OS                 Force specific OS (macos, arch)
-        --symlinks-only         Only create symlinks, skip package installation
-        --no-symlinks           Skip symlink creation
-        --dry-run               Show what would be done without making changes
-
-Examples:
-    dotfiles install                    # Auto-detect OS and install everything
-    dotfiles install hypr               # Install only hypr configuration
-    dotfiles install nvim --os arch     # Install nvim with forced OS
-    dotfiles install --symlinks-only    # Only create symlinks for all configs
-    dotfiles install fish --dry-run     # Preview fish installation
-    dotfiles remove nvim                # Remove nvim config symlinks
-    dotfiles remove all                 # Remove all dotfiles symlinks
-    dotfiles clean                      # Clean up broken symlinks
-    dotfiles status                     # Show current symlink status
-    dotfiles edit nvim                  # Edit nvim configuration
-    dotfiles dns setup                  # Setup .test domain resolution
-    dotfiles dns status                 # Check DNS setup status
-    dotfiles help install              # Show help for install command
-
-EOF
-            ;;
+        setup)     handle_setup "$target" ;;
+        link)      handle_link "$target" ;;
+        unlink)    handle_unlink "$target" ;;
+        clean)     handle_clean ;;
+        edit)      handle_edit "$target" ;;
+        status)    handle_status ;;
+        *)         echo "Usage: dotfiles [setup|link|unlink|clean|edit|status] [target|all]" && exit 1 ;;
     esac
 }
 
-show_status() {
-    local os="$1"
-    echo "Dotfiles Status:"
-    echo "=================="
-    echo "Root: $DOTFILES_ROOT"
-    echo "OS: $os"
-    echo
-
-    local found_symlinks=false
-
-    # Check bin scripts
-    echo "Bin Scripts:"
-    if [[ -d "$DOTFILES_ROOT/bin" ]]; then
-        for script in "$DOTFILES_ROOT/bin"/*; do
-            [[ -f "$script" ]] || continue
-            local script_name="$(basename "$script")"
-            local target="$HOME/.local/bin/$script_name"
-            if [[ -L "$target" && "$(readlink "$target")" == "$script" ]]; then
-                echo "  ✓ $script_name -> $target"
-                found_symlinks=true
-            else
-                echo "  ✗ $script_name (not linked)"
-            fi
-        done
-    else
-        echo "  (no bin directory)"
-    fi
-
-    echo
-    echo "Config Directories:"
-
-    # Check universal configs
-    if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
-        for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
-            [[ -d "$config_dir" ]] || continue
-            local config_name="$(basename "$config_dir")"
-            local target="$HOME/.config/$config_name"
-            if [[ -L "$target" && "$(readlink "$target")" == "$config_dir" ]]; then
-                echo "  ✓ $config_name (universal) -> $target"
-                found_symlinks=true
-            else
-                echo "  ✗ $config_name (universal) (not linked)"
-            fi
-        done
-    fi
-
-    # Check OS-specific configs
-    local os_config_dir="$DOTFILES_ROOT/config/$os"
-    if [[ -d "$os_config_dir" ]]; then
-        for config_dir in "$os_config_dir"/*; do
-            [[ -d "$config_dir" ]] || continue
-            local config_name="$(basename "$config_dir")"
-            local target="$HOME/.config/$config_name"
-            if [[ -L "$target" && "$(readlink "$target")" == "$config_dir" ]]; then
-                echo "  ✓ $config_name ($os) -> $target"
-                found_symlinks=true
-            else
-                echo "  ✗ $config_name ($os) (not linked)"
-            fi
-        done
-    fi
-
-    # Check Linux configs for Linux distros
-    if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
-        local linux_config_dir="$DOTFILES_ROOT/config/linux"
-        if [[ -d "$linux_config_dir" ]]; then
-            for config_dir in "$linux_config_dir"/*; do
-                [[ -d "$config_dir" ]] || continue
-                local config_name="$(basename "$config_dir")"
-                local target="$HOME/.config/$config_name"
-                if [[ -L "$target" && "$(readlink "$target")" == "$config_dir" ]]; then
-                    echo "  ✓ $config_name (linux) -> $target"
-                    found_symlinks=true
-                else
-                    echo "  ✗ $config_name (linux) (not linked)"
-                fi
-            done
-        fi
-    fi
-
-    if [[ "$found_symlinks" == false ]]; then
-        echo "  (no active symlinks found)"
-    fi
-}
-
-show_list() {
-    local os="$1"
-    echo "Available Configurations:"
-    echo "========================="
-
-    # List bin scripts
-    echo "Bin Scripts:"
-    if [[ -d "$DOTFILES_ROOT/bin" ]]; then
-        for script in "$DOTFILES_ROOT/bin"/*; do
-            [[ -f "$script" ]] || continue
-            local script_name="$(basename "$script")"
-            echo "  $script_name"
-        done
-    else
-        echo "  (none)"
-    fi
-
-    echo
-    echo "Config Directories:"
-
-    # List universal configs
-    echo "  Universal:"
-    if [[ -d "$DOTFILES_ROOT/config/universal" ]]; then
-        for config_dir in "$DOTFILES_ROOT/config/universal"/*; do
-            [[ -d "$config_dir" ]] || continue
-            local config_name="$(basename "$config_dir")"
-            echo "    $config_name"
-        done
-    else
-        echo "    (none)"
-    fi
-
-    # List OS-specific configs
-    echo "  $os:"
-    local os_config_dir="$DOTFILES_ROOT/config/$os"
-    if [[ -d "$os_config_dir" ]]; then
-        for config_dir in "$os_config_dir"/*; do
-            [[ -d "$config_dir" ]] || continue
-            local config_name="$(basename "$config_dir")"
-            echo "    $config_name"
-        done
-    else
-        echo "    (none)"
-    fi
-
-    # List Linux configs for Linux distros
-    if [[ "$os" =~ ^(arch|debian|redhat|linux)$ ]]; then
-        echo "  Linux:"
-        local linux_config_dir="$DOTFILES_ROOT/config/linux"
-        if [[ -d "$linux_config_dir" ]]; then
-            for config_dir in "$linux_config_dir"/*; do
-                [[ -d "$config_dir" ]] || continue
-                local config_name="$(basename "$config_dir")"
-                echo "    $config_name"
-            done
-        else
-            echo "    (none)"
-        fi
-    fi
-}
-
-handle_install() {
-    local forced_os=""
-    local symlinks_only=false
-    local no_symlinks=false
-    local dry_run=false
-    local config_name=""
-
-    # Parse install-specific arguments
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            -o|--os)
-                forced_os="$2"
-                shift 2
-                ;;
-            --symlinks-only)
-                symlinks_only=true
-                shift
-                ;;
-            --no-symlinks)
-                no_symlinks=true
-                shift
-                ;;
-            --dry-run)
-                dry_run=true
-                shift
-                ;;
-            -*)
-                log_error "Unknown install option: $1"
-                show_help install
-                exit 1
-                ;;
-            *)
-                # First non-option argument is the config name
-                if [[ -z "$config_name" ]]; then
-                    config_name="$1"
-                else
-                    log_error "Too many arguments. Only one config name allowed."
-                    show_help install
-                    exit 1
-                fi
-                shift
-                ;;
-        esac
-    done
-
-    print_banner
-
-    # Detect or use forced OS
-    local detected_os
-    if [[ -n "$forced_os" ]]; then
-        detected_os="$forced_os"
-        log_info "Using forced OS: $detected_os"
-    else
-        detected_os="$(detect_os)"
-        log_info "Detected OS: $detected_os"
-    fi
-
-    local architecture="$(detect_architecture)"
-    log_info "Detected architecture: $architecture"
-
-    # Validate OS support
-    case "$detected_os" in
-        macos|arch)
-            log_success "OS supported: $detected_os"
-            ;;
-        *)
-            log_error "Unsupported OS: $detected_os"
-            log_error "Supported OS types: macos, arch"
-            exit 1
-            ;;
-    esac
-
-    if [[ "$dry_run" == true ]]; then
-        log_warn "DRY RUN MODE - No changes will be made"
-        echo
-    fi
-
-    # Handle selective installation
-    if [[ -n "$config_name" ]]; then
-        # Installing specific configuration
-        log_info "Installing specific configuration: $config_name"
-
-        local config_category="$(get_config_category "$config_name" "$detected_os")"
-
-        if [[ -z "$config_category" ]]; then
-            log_error "Configuration '$config_name' not found"
-            echo
-            echo "Available configurations:"
-            show_list "$detected_os"
-            exit 1
-        fi
-
-        # Check if config is appropriate for current OS
-        if ! validate_config_for_os "$config_name" "$config_category" "$detected_os"; then
-            if ! prompt_os_mismatch "$config_name" "$config_category" "$detected_os"; then
-                log_info "Installation cancelled by user"
-                exit 0
-            fi
-        fi
-
-        # Skip OS-specific installation for selective install
-        # Create symlinks for specific config only (unless disabled)
-        if [[ "$no_symlinks" != true ]]; then
-            if [[ "$dry_run" == true ]]; then
-                log_info "Would create symlinks for config: $config_name ($config_category)"
-            else
-                create_single_config_symlink "$config_name" "$config_category" "$detected_os"
-            fi
-        fi
-    else
-        # Installing all configurations (existing behavior)
-        # Check if OS-specific installer exists
-        local os_installer="$DOTFILES_ROOT/os/$detected_os/install.sh"
-        if [[ ! -f "$os_installer" ]]; then
-            log_error "OS installer not found: $os_installer"
-            exit 1
-        fi
-
-        # Run OS-specific installation (unless symlinks-only)
-        if [[ "$symlinks_only" != true ]]; then
-            if [[ "$dry_run" == true ]]; then
-                log_info "Would run OS-specific installer: $os_installer"
-            else
-                log_info "Running OS-specific installer..."
-                source "$os_installer"
-            fi
-        fi
-
-        # Create symlinks (unless disabled)
-        if [[ "$no_symlinks" != true ]]; then
-            if [[ "$dry_run" == true ]]; then
-                log_info "Would auto-discover and create symlinks for OS: $detected_os"
-                # Show what symlinks would be created (existing dry-run logic from install.sh)
-            else
-                create_symlinks "$detected_os"
-            fi
-        fi
-    fi
-
-    if [[ "$dry_run" != true ]]; then
-        echo
-        log_success "Installation completed successfully!"
-        echo
-        log_info "Next steps:"
-        echo "  • Restart your terminal or run 'exec fish' to reload fish config"
-        echo "  • Configure any remaining applications manually"
-        echo "  • Enjoy your new setup! 🎉"
-    else
-        echo
-        log_info "Dry run completed. Use the command without --dry-run to apply changes."
-    fi
-}
-
-handle_remove() {
+handle_setup() {
     local target="$1"
-
-    if [[ -z "$target" ]]; then
-        log_error "Missing argument for remove command"
-        echo "Usage: dotfiles remove <config_name|all>"
-        echo "Examples:"
-        echo "  dotfiles remove nvim     # Remove nvim config only"
-        echo "  dotfiles remove all      # Remove all dotfiles"
-        exit 1
-    fi
-
-    local detected_os="$(detect_os)"
-
-    if [[ "$target" == "all" ]]; then
-        remove_symlinks "$detected_os"
-        log_success "All dotfiles symlinks removed!"
+    local os="$(detect_os)"
+    
+    log_info "Setting up $os environment..."
+    
+    # Always run OS installer
+    local os_installer="$DOTFILES_ROOT/os/$os/install.sh"
+    if [[ -f "$os_installer" ]]; then
+        source "$os_installer"
     else
-        remove_single_config "$target" "$detected_os"
-        log_success "Removed symlinks for: $target"
+        log_warn "No OS installer found for: $os"
+    fi
+    
+    # Link configs if specified
+    if [[ -n "$target" ]]; then
+        create_single_symlink "$target" "$os"
+    else
+        create_all_symlinks "$os"
+    fi
+    
+    log_success "Setup completed!"
+}
+
+handle_link() {
+    local target="$1"
+    local os="$(detect_os)"
+    
+    # Default to 'all' behavior when no args
+    if [[ -z "$target" || "$target" == "all" ]]; then
+        create_all_symlinks "$os"
+    else
+        create_single_symlink "$target" "$os"
+    fi
+}
+
+handle_unlink() {
+    local target="$1"
+    local os="$(detect_os)"
+    
+    # Default to 'all' behavior when no args
+    if [[ -z "$target" || "$target" == "all" ]]; then
+        remove_symlinks "$os"
+    else
+        remove_single_config "$target" "$os"
     fi
 }
 
@@ -523,264 +82,45 @@ handle_clean() {
     clean_broken_symlinks
 }
 
-find_config_path() {
-    local config_name="$1"
-    local detected_os="$2"
-    local found_paths=()
-
-    # Check universal configs first
-    if [[ -d "$DOTFILES_ROOT/config/universal/$config_name" ]]; then
-        found_paths+=("$DOTFILES_ROOT/config/universal/$config_name")
-    fi
-
-    # Check OS-specific configs
-    if [[ -d "$DOTFILES_ROOT/config/$detected_os/$config_name" ]]; then
-        found_paths+=("$DOTFILES_ROOT/config/$detected_os/$config_name")
-    fi
-
-    # Check Linux configs for Linux distros
-    if [[ "$detected_os" =~ ^(arch|debian|redhat|linux)$ ]]; then
-        if [[ -d "$DOTFILES_ROOT/config/linux/$config_name" ]]; then
-            found_paths+=("$DOTFILES_ROOT/config/linux/$config_name")
-        fi
-    fi
-
-    # Check bin scripts
-    if [[ -f "$DOTFILES_ROOT/bin/$config_name" ]]; then
-        found_paths+=("$DOTFILES_ROOT/bin/$config_name")
-    fi
-
-    echo "${found_paths[@]}"
-}
-
-get_config_category() {
-    local config_name="$1"
-    local detected_os="$2"
-
-    # Check in order of priority: universal -> os-specific -> all other os dirs -> bin
-    if [[ -d "$DOTFILES_ROOT/config/universal/$config_name" ]]; then
-        echo "universal"
-    elif [[ -d "$DOTFILES_ROOT/config/$detected_os/$config_name" ]]; then
-        echo "$detected_os"
-    elif [[ -d "$DOTFILES_ROOT/config/linux/$config_name" ]]; then
-        echo "linux"
-    elif [[ -d "$DOTFILES_ROOT/config/macos/$config_name" ]]; then
-        echo "macos"
-    elif [[ -d "$DOTFILES_ROOT/config/arch/$config_name" ]]; then
-        echo "arch"
-    elif [[ -d "$DOTFILES_ROOT/config/debian/$config_name" ]]; then
-        echo "debian"
-    elif [[ -d "$DOTFILES_ROOT/config/redhat/$config_name" ]]; then
-        echo "redhat"
-    elif [[ -f "$DOTFILES_ROOT/bin/$config_name" ]]; then
-        echo "bin"
-    else
-        echo ""
-    fi
-}
-
-validate_config_for_os() {
-    local config_name="$1"
-    local config_category="$2"
-    local detected_os="$3"
-
-    case "$config_category" in
-        universal|bin)
-            # Universal and bin configs work on all OS
-            return 0
-            ;;
-        linux)
-            # Linux configs only work on Linux distros
-            if [[ "$detected_os" =~ ^(arch|debian|redhat|linux)$ ]]; then
-                return 0
-            else
-                return 1
-            fi
-            ;;
-        macos)
-            # macOS configs only work on macOS
-            if [[ "$detected_os" == "macos" ]]; then
-                return 0
-            else
-                return 1
-            fi
-            ;;
-        arch|debian|redhat)
-            # Distro-specific configs work on their respective distros
-            if [[ "$detected_os" == "$config_category" ]]; then
-                return 0
-            else
-                return 1
-            fi
-            ;;
-        *)
-            # Unknown category
-            return 1
-            ;;
-    esac
-}
-
-prompt_os_mismatch() {
-    local config_name="$1"
-    local config_category="$2"
-    local detected_os="$3"
-
-    local os_display
-    case "$config_category" in
-        linux) os_display="Linux" ;;
-        macos) os_display="macOS" ;;
-        arch) os_display="Arch Linux" ;;
-        debian) os_display="Debian/Ubuntu" ;;
-        redhat) os_display="Red Hat/CentOS/Fedora" ;;
-        *) os_display="$config_category" ;;
-    esac
-
-    local current_os_display
-    case "$detected_os" in
-        linux) current_os_display="Linux" ;;
-        macos) current_os_display="macOS" ;;
-        arch) current_os_display="Arch Linux" ;;
-        debian) current_os_display="Debian/Ubuntu" ;;
-        redhat) current_os_display="Red Hat/CentOS/Fedora" ;;
-        *) current_os_display="$detected_os" ;;
-    esac
-
-    log_warn "Configuration '$config_name' is meant for $os_display and you are currently on $current_os_display."
-    echo -n "Are you sure you want to install this? (y/N): "
-    read -r response
-
-    case "$response" in
-        [yY]|[yY][eE][sS])
-            return 0
-            ;;
-        *)
-            return 1
-            ;;
-    esac
-}
-
 handle_edit() {
-    local config_name="$1"
-
+    local target="$1"
+    
     # Check if EDITOR is set
     if [[ -z "$EDITOR" ]]; then
         log_error "\$EDITOR environment variable is not set"
-        echo
         echo "Please set your editor preference:"
         echo "  export EDITOR=nvim      # For Neovim"
         echo "  export EDITOR=vim       # For Vim"
         echo "  export EDITOR=code      # For VS Code"
         echo "  export EDITOR=nano      # For Nano"
-        echo
-        echo "Add this to your shell profile (~/.bashrc, ~/.zshrc, ~/.config/fish/config.fish)"
         exit 1
     fi
-
+    
     # If no config specified, open entire dotfiles directory
-    if [[ -z "$config_name" ]]; then
+    if [[ -z "$target" ]]; then
         log_info "Opening dotfiles directory in $EDITOR..."
         exec "$EDITOR" "$DOTFILES_ROOT"
-        return
     fi
-
-    local detected_os="$(detect_os)"
-    local found_paths=($(find_config_path "$config_name" "$detected_os"))
-
-    if [[ ${#found_paths[@]} -eq 0 ]]; then
-        log_error "Configuration '$config_name' not found"
-        echo
+    
+    # Find config path
+    local os="$(detect_os)"
+    local config_path="$(resolve_config_path "$target" "$os")"
+    
+    if [[ -z "$config_path" ]]; then
+        log_error "Configuration '$target' not found"
         echo "Available configurations:"
-        show_list "$detected_os"
+        show_list "$os"
         exit 1
-    elif [[ ${#found_paths[@]} -eq 1 ]]; then
-        local target_path="${found_paths[0]}"
-        log_info "Opening $config_name configuration in $EDITOR..."
-        log_info "Path: $target_path"
-        exec "$EDITOR" "$target_path"
-    else
-        # Multiple matches found - show options
-        log_info "Multiple '$config_name' configurations found:"
-        echo
-        for i in "${!found_paths[@]}"; do
-            local path="${found_paths[$i]}"
-            local relative_path="${path#$DOTFILES_ROOT/}"
-            echo "  $((i+1)). $relative_path"
-        done
-        echo
-        echo -n "Select configuration to edit (1-${#found_paths[@]}): "
-        read -r selection
-
-        if [[ "$selection" =~ ^[0-9]+$ ]] && [[ "$selection" -ge 1 ]] && [[ "$selection" -le "${#found_paths[@]}" ]]; then
-            local target_path="${found_paths[$((selection-1))]}"
-            log_info "Opening selected configuration in $EDITOR..."
-            log_info "Path: $target_path"
-            exec "$EDITOR" "$target_path"
-        else
-            log_error "Invalid selection"
-            exit 1
-        fi
     fi
+    
+    local full_path="$DOTFILES_ROOT/$config_path"
+    log_info "Opening $target configuration in $EDITOR..."
+    log_info "Path: $full_path"
+    exec "$EDITOR" "$full_path"
 }
 
-main() {
-    local command="$1"
-    shift
-
-    case "$command" in
-        install)
-            handle_install "$@"
-            ;;
-        remove)
-            handle_remove "$@"
-            ;;
-        clean)
-            handle_clean
-            ;;
-        edit)
-            handle_edit "$@"
-            ;;
-        status)
-            show_status "$(detect_os)"
-            ;;
-        list)
-            show_list "$(detect_os)"
-            ;;
-        help|--help|-h)
-            show_help "$1"
-            ;;
-        "")
-            show_help
-            ;;
-        dns)
-            case "${1:-}" in
-                setup)
-                    source "$DOTFILES_ROOT/lib/dns-setup.sh"
-                    setup_dns_test_domains
-                    ;;
-                remove)
-                    source "$DOTFILES_ROOT/lib/dns-setup.sh"
-                    remove_dns_setup
-                    ;;
-                status)
-                    source "$DOTFILES_ROOT/lib/dns-setup.sh"
-                    check_dns_status
-                    ;;
-                ""|*)
-                    echo "Usage: dotfiles dns {setup|remove|status}"
-                    echo "  setup   - Configure .test domain DNS resolution"
-                    echo "  remove  - Remove DNS configuration"
-                    echo "  status  - Check current DNS setup status"
-                    exit 1
-                    ;;
-            esac
-            ;;
-        *)
-            log_error "Unknown command: $command"
-            echo
-            show_help
-            exit 1
-            ;;
-    esac
+handle_status() {
+    show_status "$(detect_os)"
 }
 
 # Make sure all lib scripts are executable
