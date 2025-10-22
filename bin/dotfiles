@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# =============================================================================
 # Script Name : dotfiles
 # Description : CLI interface for managing dotfiles configuration
-# =============================================================================
 
 set -e
 
@@ -17,7 +15,7 @@ source "$DOTFILES_ROOT/lib/symlink.sh"
 print_banner() {
     echo "╔══════════════════════════════════════════════════════════════╗"
     echo "║                      Dotfiles Manager                        ║"
-    echo "║                    CLI Configuration Tool                    ║"
+    echo "║                   CLI Configuration Tool                     ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
     echo
 }
