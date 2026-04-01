@@ -30,7 +30,7 @@ return {
         opts = {},
       },
       'folke/lazydev.nvim',
-      'huijiro/blink-cmp-supermaven',
+      'fang2hou/blink-copilot',
     },
 
     --- @module 'blink.cmp'
@@ -76,13 +76,14 @@ return {
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev', 'supermaven', 'laravel' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'copilot', 'laravel' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          supermaven = {
-            name = 'supermaven',
-            module = 'blink-cmp-supermaven',
+          copilot = {
+            name = 'copilot',
+            module = 'blink-copilot',
             async = true,
+            score_offset = 100,
           },
           laravel = {
             name = 'laravel',
