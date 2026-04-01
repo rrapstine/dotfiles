@@ -1,11 +1,14 @@
 clipboard-read = allow
 clipboard-write = allow
 copy-on-select = true
-window-theme = ghostty
-window-padding-x = 10
+
 theme = Catppuccin Mocha
-bold-is-bright = true
-font-size = 14
-font-family = Iosevka Nerd Font
-adjust-cell-height = 50%
+window-theme = ghostty
 gtk-wide-tabs = false
+window-padding-x = 10
+window-padding-y = 10
+
+font-family = Iosevka Nerd Font
+font-size = 14
+adjust-cell-height = 50%
+bold-is-bright = true
