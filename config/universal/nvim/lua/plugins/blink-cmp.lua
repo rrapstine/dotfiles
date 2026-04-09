@@ -30,7 +30,7 @@ return {
         opts = {},
       },
       'folke/lazydev.nvim',
-      'fang2hou/blink-copilot',
+      'milanglacier/minuet-ai.nvim',
     },
 
     --- @module 'blink.cmp'
@@ -76,13 +76,12 @@ return {
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev', 'copilot', 'laravel' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'minuet', 'laravel' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          copilot = {
-            name = 'copilot',
-            module = 'blink-copilot',
-            async = true,
+          minuet = {
+            name = 'minuet',
+            module = 'minuet.blink',
             score_offset = 100,
           },
           laravel = {
