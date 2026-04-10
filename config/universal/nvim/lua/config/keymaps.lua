@@ -27,14 +27,14 @@ keys.set('i', ',,', '<Esc>A,<Esc>')
 keys.set('n', 'U', '<C-R>', { desc = 'Redo the last change' })
 
 -- Move lines vertically in different modes
-keys.set('n', '<A-j>', ':m .+1<CR>==', { desc = 'Move line up in normal mode' })
-keys.set('n', '<A-k>', ':m .-2<CR>==', { desc = 'Move line down in normal mode' })
+keys.set('n', '<C-S-j>', ':m .+1<CR>==', { desc = 'Move line up in normal mode' })
+keys.set('n', '<C-S-k>', ':m .-2<CR>==', { desc = 'Move line down in normal mode' })
 
-keys.set('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { desc = 'Move line up in insert mode' })
-keys.set('i', '<A-k>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line down in insert mode' })
+keys.set('i', '<C-S-j>', '<Esc>:m .+1<CR>==gi', { desc = 'Move line up in insert mode' })
+keys.set('i', '<C-S-k>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line down in insert mode' })
 
-keys.set('v', '<A-k>', ':m \'<-2<CR>gv=gv', { desc = 'Move line(s) up in visual mode' })
-keys.set('v', '<A-j>', ':m \'>+1<CR>gv=gv', { desc = 'Move line(s) down in visual mode' })
+keys.set('v', '<C-S-k>', ':m \'<-2<CR>gv=gv', { desc = 'Move line(s) up in visual mode' })
+keys.set('v', '<C-S-j>', ':m \'>+1<CR>gv=gv', { desc = 'Move line(s) down in visual mode' })
 
 -- Keep cursor centered while scrolling with Ctrl+D/U
 keys.set('n', '<C-u>', '<C-u>zz', { desc = 'Move up in buffer, with cursor centered' })
