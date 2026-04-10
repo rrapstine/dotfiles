@@ -1,0 +1,35 @@
+#!/bin/bash
+# =============================================================================
+# Script Name : tdl (Tmux Dev Layout)
+# Description : Create a two-window IDE layout with editor, opencode, and terminals
+# Author      : rrapstine
+# License     : MIT
+# Version     : 1.0.0
+# =============================================================================
+
+[[ -z "$TMUX" ]] && { echo "tdl: must be run inside tmux"; exit 1; }
+
+project="$(basename "$PWD")"
+editor_pane="$TMUX_PANE"
+current_dir="$PWD"
+
+pane_count=$(tmux list-panes -t "$editor_pane" -F '#{pane_id}' | wc -l | tr -d ' ')
+
+if [[ "$pane_count" -eq 1 ]]; then
+  tmux rename-window -t "$editor_pane" "$project"
+
+  ai_pane=$(tmux split-window -h -p 30 -t "$editor_pane" -c "$current_dir" -P -F '#{pane_id}')
+
+  tmux send-keys -t "$ai_pane" "opencode" C-m
+  tmux send-keys -t "$editor_pane" "${EDITOR:-vim} ." C-m
+fi
+
+if ! tmux list-windows -F '#{window_name}' | grep -q "^term:$project$"; then
+  term_pane=$(tmux new-window -n "term:$project" -c "$current_dir" -P -F '#{pane_id}')
+
+  tmux split-window -v -p 30 -t "$term_pane" -c "$current_dir"
+  tmux split-window -h -t "$term_pane" -c "$current_dir"
+fi
+
+tmux select-window -t "$project"
+tmux select-pane -t "$editor_pane"
