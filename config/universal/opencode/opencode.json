@@ -1,15 +1,26 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "ollama/gemma-4b-smart",
+  "model": "github-copilot/gpt-5.4-mini",
+  "agent": {
+    "plan": {
+      "mode": "primary",
+      "model": "zai-coding-plan/glm-5.1",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "build": {
+      "mode": "primary",
+"model": "github-copilot/gpt-5.4-mini",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    }
+  },
   "provider": {
     "ollama": {
-      "models": {
-        "gemma-4b-smart": {
-          "_launch": true,
-          "name": "gemma-4b-smart"
-        }
-      },
-      "name": "Ollama",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
         "baseURL": "http://127.0.0.1:11434/v1"
