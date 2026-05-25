@@ -59,19 +59,14 @@ hyprland
 hypridle
 hyprlock
 hyprpaper
-waybar
-mako
-wofi
-wlogout
-wob
 grimblast-git
 slurp
 swappy
 wl-clipboard
 xdg-desktop-portal-hyprland
-swaybg
-swaylock-effects-git
 uwsm
+greetd
+tuigreet
 
 # Audio/Video
 pipewire-alsa

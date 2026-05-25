@@ -1,6 +1,9 @@
 # Optional systemd services to enable
 # Uncomment the services you want to enable
 
+# Login/display manager (required for boot)
+greetd
+
 # Network management
 # NetworkManager
 
