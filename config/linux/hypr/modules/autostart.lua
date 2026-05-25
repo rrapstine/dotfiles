@@ -17,6 +17,9 @@ hl.on('hyprland.start', function()
   hl.exec_cmd('elephant &')
   hl.exec_cmd('walker --gapplication-service &')
 
+  -- Lock screen immediately on startup (works with greetd autologin)
+  hl.exec_cmd('hyprlock &')
+
   -- DBus session
   hl.exec_cmd('systemctl --user import-environment &')
   hl.exec_cmd('hash dbus-update-activation-environment 2>/dev/null &')

@@ -27,6 +27,9 @@ The dotfiles system automatically skips any directory starting with `_` when:
 
 ## Current Contents
 
+### greetd/
+- `config.toml` - greetd greeter configuration with tuigreet fallback and autologin to Hyprland (via uwsm)
+
 ### systemd/system/
 - `media-games-setup.service` - Creates mount points for game drives
 - `media-games-ssd.mount` - Mounts SSD games drive with BTRFS optimizations
