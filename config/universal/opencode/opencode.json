@@ -4,7 +4,7 @@
   "agent": {
     "plan": {
       "mode": "primary",
-      "model": "zai-coding-plan/glm-5.1",
+      "model": "opencode-go/glm-5.1",
       "permission": {
         "edit": "deny",
         "bash": "deny"
@@ -12,18 +12,10 @@
     },
     "build": {
       "mode": "primary",
-"model": "github-copilot/gpt-5.4-mini",
+      "model": "opencode-go/kimi-k2.6",
       "permission": {
         "edit": "allow",
         "bash": "allow"
-      }
-    }
-  },
-  "provider": {
-    "ollama": {
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "http://127.0.0.1:11434/v1"
       }
     }
   }
