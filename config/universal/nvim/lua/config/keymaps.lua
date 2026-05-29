@@ -1,95 +1,59 @@
-local opts = { noremap = true, silent = true }
-local keys = vim.keymap
+-- [[ Helix-style navigation ]]
+vim.keymap.set("n", "ge", "G", { desc = "Jump to end of file" })
+vim.keymap.set("n", "gh", "^", { desc = "Jump to start of line" })
+vim.keymap.set("n", "gl", "$", { desc = "Jump to end of line" })
+vim.keymap.set("n", "U", "<C-R>", { desc = "Redo" })
 
--- [[ Basic Keymaps ]]
+-- [[ Centered scrolling ]]
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up, centered" })
+vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Scroll down, centered" })
+vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result, centered" })
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result, centered" })
 
--- Leader keys
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+-- [[ Line movement ]]
+vim.keymap.set("n", "<C-S-j>", ":m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set("n", "<C-S-k>", ":m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("i", "<C-S-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
+vim.keymap.set("i", "<C-S-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
+vim.keymap.set("v", "<C-S-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+vim.keymap.set("v", "<C-S-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 
--- Change some default navigation keys to match Helix, which I find more intuitive
-keys.set('n', 'ge', 'G', { desc = 'Jump to end of file' })
-keys.set('n', 'gh', '^', { desc = 'Jump to start of line' })
-keys.set('n', 'gl', '$', { desc = 'Jump to end of line' })
+-- [[ Insert helpers ]]
+vim.keymap.set("i", ";;", "<Esc>A;<Esc>")
+vim.keymap.set("i", ",,", "<Esc>A,<Esc>")
 
--- Allow moving up and down in wrapped text
-keys.set('n', 'j', 'v:count == 0 ? \'gj\' : \'j\'', { expr = true })
-keys.set('n', 'k', 'v:count == 0 ? \'gk\' : \'k\'', { expr = true })
+-- [[ Black hole register ]]
+vim.keymap.set("n", "x", '"_x')
+vim.keymap.set("v", "p", '"_dP')
 
--- Set Q to behave like :q
-keys.set('n', 'Q', ':q<CR>')
+-- [[ Quit ]]
+vim.keymap.set("n", "Q", ":q<CR>")
 
--- Easily append ; or , to end of line
-keys.set('i', ';;', '<Esc>A;<Esc>')
-keys.set('i', ',,', '<Esc>A,<Esc>')
+-- [[ Visual indent (keep selection) ]]
+vim.keymap.set("v", ">", ">gv", { desc = "Indent, keep selection" })
+vim.keymap.set("v", "<", "<gv", { desc = "Unindent, keep selection" })
 
--- Undo the last undo, inspired by Helix
-keys.set('n', 'U', '<C-R>', { desc = 'Redo the last change' })
+-- [[ Search - keep under <leader>s ]]
+vim.keymap.set("n", "<leader>sf", function()
+  Snacks.picker.files()
+end, { desc = "[S]earch [F]iles" })
+vim.keymap.set("n", "<leader>s.", function()
+  Snacks.picker.recent()
+end, { desc = "[S]earch Recent Files" })
+vim.keymap.set("n", "<leader>sm", function()
+  Snacks.picker.pick("notifications")
+end, { desc = "[S]earch [M]essages" })
 
--- Move lines vertically in different modes
-keys.set('n', '<C-S-j>', ':m .+1<CR>==', { desc = 'Move line up in normal mode' })
-keys.set('n', '<C-S-k>', ':m .-2<CR>==', { desc = 'Move line down in normal mode' })
+-- [[ Explorer toggle ]]
+vim.keymap.set("n", "\\", "<cmd>Snacks explorer<CR>", { desc = "Toggle Explorer" })
 
-keys.set('i', '<C-S-j>', '<Esc>:m .+1<CR>==gi', { desc = 'Move line up in insert mode' })
-keys.set('i', '<C-S-k>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line down in insert mode' })
+-- [[ Oil ]]
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open Oil (parent directory)" })
+vim.keymap.set("n", "<leader>-", function()
+  require("oil").toggle_float()
+end, { desc = "Open Oil (floating)" })
 
-keys.set('v', '<C-S-k>', ':m \'<-2<CR>gv=gv', { desc = 'Move line(s) up in visual mode' })
-keys.set('v', '<C-S-j>', ':m \'>+1<CR>gv=gv', { desc = 'Move line(s) down in visual mode' })
-
--- Keep cursor centered while scrolling with Ctrl+D/U
-keys.set('n', '<C-u>', '<C-u>zz', { desc = 'Move up in buffer, with cursor centered' })
-keys.set('n', '<C-d>', '<C-d>zz', { desc = 'Move down in buffer, with cursor centered' })
-
--- Keep cursor centered when jumping through search results
-keys.set('n', 'n', 'nzzzv', { desc = 'Goto next search result, with cursor centered' })
-keys.set('n', 'N', 'Nzzzv', { desc = 'Goto previous search result, with cursor centered' })
-
--- Indent in visual mode
-keys.set('v', '>', '>gv', opts, { desc = 'Indent in visual mode' })
-keys.set('v', '<', '<gv', opts, { desc = 'Unindent in visual mode' })
-
--- Prevent copying deleted characters to clipboard
-keys.set('n', 'x', '"_x', opts)
-
--- Set paste to use "black hole" register in visual mode
-keys.set('v', 'p', '"_dP')
-
--- Global search and replace under cursor
--- TODO: Look into a better way to do this, perhaps a multi-cursor plugin
-keys.set('n', 'S', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Replace word under cursor, globally' })
-
--- Clear highlights on search when pressing <Esc> in normal mode
-keys.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
--- Diagnostic keymaps
-keys.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
--- Exit terminal mode easier
-keys.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-
--- Use CTRL+<hjkl> to switch between windows
-keys.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-keys.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-keys.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-keys.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
--- Close current buffer without closing window
-keys.set('n', '<leader>bd', function()
-  local buf = vim.api.nvim_get_current_buf()
-  -- If there's only one buffer, create a new one first
-  if #vim.fn.getbufinfo({ buflisted = 1 }) == 1 then
-    vim.cmd('enew')
-  end
-  vim.cmd('bdelete!' .. buf)
-end, { desc = '[B]uffer [D]elete' })
-
--- [[ Basic AutoCommands ]]
-
--- Highlight when yanking (copying) text
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
-})
+-- [[ Clear whitespace ]]
+vim.keymap.set("n", "<leader>cw", function()
+  MiniTrailspace.trim()
+end, { desc = "[C]lear [w]hitespace" })

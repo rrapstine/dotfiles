@@ -7,6 +7,9 @@ hl.on('hyprland.start', function()
   -- Input methods
   hl.exec_cmd('fcitx5 -d &')
 
+  -- Status bar
+  hl.exec_cmd('wayle panel &')
+
   -- System tray
   -- hl.exec_cmd("nm-applet --indicator &")
 
@@ -26,5 +29,5 @@ hl.on('hyprland.start', function()
   hl.exec_cmd('dbus-update-activation-environment --systemd &')
 
   -- Idle handler
-  hl.exec_cmd(defaults.idlehandler)
+  hl.exec_cmd(defaults.idlehandler .. ' &')
 end)

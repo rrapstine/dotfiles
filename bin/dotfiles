@@ -18,7 +18,7 @@ source "$DOTFILES_ROOT/lib/symlink.sh"
 main() {
     local command="${1:-setup}"
     local target="${2:-}"
-    
+
     case "$command" in
         setup)     handle_setup "$target" ;;
         link)      handle_link "$target" ;;
@@ -33,9 +33,9 @@ main() {
 handle_setup() {
     local target="$1"
     local os="$(detect_os)"
-    
+
     log_info "Setting up $os environment..."
-    
+
     # Always run OS installer
     local os_installer="$DOTFILES_ROOT/os/$os/install.sh"
     if [[ -f "$os_installer" ]]; then
@@ -43,21 +43,21 @@ handle_setup() {
     else
         log_warn "No OS installer found for: $os"
     fi
-    
+
     # Link configs if specified
     if [[ -n "$target" ]]; then
         create_single_symlink "$target" "$os"
     else
         create_all_symlinks "$os"
     fi
-    
+
     log_success "Setup completed!"
 }
 
 handle_link() {
     local target="$1"
     local os="$(detect_os)"
-    
+
     # Default to 'all' behavior when no args
     if [[ -z "$target" || "$target" == "all" ]]; then
         create_all_symlinks "$os"
@@ -69,7 +69,7 @@ handle_link() {
 handle_unlink() {
     local target="$1"
     local os="$(detect_os)"
-    
+
     # Default to 'all' behavior when no args
     if [[ -z "$target" || "$target" == "all" ]]; then
         remove_symlinks "$os"
@@ -84,7 +84,7 @@ handle_clean() {
 
 handle_edit() {
     local target="$1"
-    
+
     # Check if EDITOR is set
     if [[ -z "$EDITOR" ]]; then
         log_error "\$EDITOR environment variable is not set"
@@ -95,24 +95,24 @@ handle_edit() {
         echo "  export EDITOR=nano      # For Nano"
         exit 1
     fi
-    
+
     # If no config specified, open entire dotfiles directory
     if [[ -z "$target" ]]; then
         log_info "Opening dotfiles directory in $EDITOR..."
         exec "$EDITOR" "$DOTFILES_ROOT"
     fi
-    
+
     # Find config path
     local os="$(detect_os)"
     local config_path="$(resolve_config_path "$target" "$os")"
-    
+
     if [[ -z "$config_path" ]]; then
         log_error "Configuration '$target' not found"
         echo "Available configurations:"
         show_list "$os"
         exit 1
     fi
-    
+
     local full_path="$DOTFILES_ROOT/$config_path"
     log_info "Opening $target configuration in $EDITOR..."
     log_info "Path: $full_path"

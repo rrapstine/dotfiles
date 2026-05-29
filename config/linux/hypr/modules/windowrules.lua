@@ -12,6 +12,12 @@ hl.workspace_rule({ workspace = '6', gaps_out = 5, gaps_in = 3, persistent = tru
 
 --- Workspace Assignments ---
 hl.window_rule({
+  match = { class = 'brave-origin-beta' },
+  workspace = '1',
+  maximize = true,
+})
+
+hl.window_rule({
   match = { class = 'app.zen_browser.zen' },
   workspace = '1',
   maximize = true,
@@ -285,4 +291,3 @@ hl.layer_rule({
   match = { namespace = 'wallpaper' },
   animation = 'fade 50%',
 })
-

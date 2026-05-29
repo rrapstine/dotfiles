@@ -5,7 +5,7 @@ local defaults = {
   mainMod = 'SUPER',
   terminal = 'ghostty',
   filemanager = 'nautilus',
-  browser = 'helium-browser',
+  browser = 'brave-origin-beta',
   applauncher = 'walker',
   idlehandler = 'hypridle',
 }
@@ -14,4 +14,3 @@ local defaults = {
 hl.env('mainMod', defaults.mainMod)
 
 return defaults
-

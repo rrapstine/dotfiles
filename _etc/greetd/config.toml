@@ -2,9 +2,9 @@
 vt = "next"
 
 [default_session]
-command = "tuigreet --cmd 'uwsm start -F hyprland-uwsm' --time --time-format '%H:%M' --remember --remember-session --asterisks --theme 'border=magenta;text=light_blue;prompt=light_magenta;input=light_blue;time=light_magenta;action=light_yellow;button=magenta;container=dark_gray;title=magenta;greet=light_cyan'"
+command = "tuigreet --cmd 'uwsm start hyprland.desktop' --time --time-format '%H:%M' --remember --remember-session --asterisks --theme 'border=magenta;text=light_blue;prompt=light_magenta;input=light_blue;time=light_magenta;action=light_yellow;button=magenta;container=dark_gray;title=magenta;greet=light_cyan'"
 user = "greeter"
 
 [initial_session]
-command = "uwsm start -F hyprland-uwsm"
+command = "uwsm start hyprland.desktop"
 user = "richard"
