@@ -8,7 +8,7 @@ hl.on('hyprland.start', function()
   hl.exec_cmd('fcitx5 -d &')
 
   -- Status bar
-  hl.exec_cmd('wayle panel &')
+  hl.exec_cmd('wayle panel start &')
 
   -- System tray
   -- hl.exec_cmd("nm-applet --indicator &")
