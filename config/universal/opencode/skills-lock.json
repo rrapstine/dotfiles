@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "skills": {
+    "ansible": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/ansible/SKILL.md",
+      "computedHash": "2a1096b7a295fef49f09f4a0f291843618c80ce3ead2914c0a04ed3a56569542"
+    },
+    "api-tester": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/api-tester/SKILL.md",
+      "computedHash": "5a6b124489ad5ef22a598033d23c8ce99abd2d0647cabac24e53fa515adccfae"
+    },
+    "ci-cd": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/ci-cd/SKILL.md",
+      "computedHash": "a2b06e44531799b6e1ebc113d660649663e9199f829e998c905f4f00da30f820"
+    },
+    "code-reviewer": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/code-reviewer/SKILL.md",
+      "computedHash": "153c90b1e94667ffa7e0d2f90fed45d73f8f59958513351643e54d4723eb3aad"
+    },
+    "compliance": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/compliance/SKILL.md",
+      "computedHash": "234d4585d266cf98bd73d460ef323db2f83adc22a191b380aeeb67c410aeb84e"
+    },
+    "css-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/css-expert/SKILL.md",
+      "computedHash": "8c71a846d038d5c6e2c3a6a8fc1d34b0a24a7c9f1abe68549b88ba1f2068c098"
+    },
+    "data-analyst": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/data-analyst/SKILL.md",
+      "computedHash": "1ffce98ab94e1aabc4a28c8e3c7d4df520bef1f1088c99c4b29d0e4de150958a"
+    },
+    "data-pipeline": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/data-pipeline/SKILL.md",
+      "computedHash": "a159312c600dc5d8b097229b4338aff1b91cfea3921821b4b1ced1c891bb3f17"
+    },
+    "docker": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/docker/SKILL.md",
+      "computedHash": "c670435df4d496b20a195909e87926bcb950d361728d61dd16f00c833266a0ce"
+    },
+    "git-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/git-expert/SKILL.md",
+      "computedHash": "099dbe0e40b09b1d802757f045ed4cf63bd63b0e96ae435fb7827e39824ddfba"
+    },
+    "github": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/github/SKILL.md",
+      "computedHash": "3e86acae3f806c8ed3de8ca6f2d95b6f564616ef1042cc4d104cb718dafb0237"
+    },
+    "golang-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/golang-expert/SKILL.md",
+      "computedHash": "b6539660b8e864cee96f9cf1bf6d35641b25f4abf1da87dfa95c2e59ffa3385a"
+    },
+    "oauth-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/oauth-expert/SKILL.md",
+      "computedHash": "977b78697558c50f7a3bcdb5ba891ed7cc1cfae54f9ceabd906baf23b55eb408"
+    },
+    "openapi-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/openapi-expert/SKILL.md",
+      "computedHash": "1fa2f26927339ad55f1fbfd0c34683ef2a1d15006fd61802787e80c8eca9cc18"
+    },
+    "postgres-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/postgres-expert/SKILL.md",
+      "computedHash": "27fda5ef37dca3f12a8ebfbdf5122ad505097480a0da9fda81b00caedd1b5a32"
+    },
+    "redis-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/redis-expert/SKILL.md",
+      "computedHash": "09529422a35d0c718c9b6604822638ec2a70108eaa53063bb940f591ce61298c"
+    },
+    "regex-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/regex-expert/SKILL.md",
+      "computedHash": "f9f4d89b2a1481678fef8333da9c1a4b589352c142ce1adc3c6e968ac738042e"
+    },
+    "researcher-hand-skill": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-hands/bundled/researcher/SKILL.md",
+      "computedHash": "eb482abd706473c102cf199e038afe507a6be1b864cbb9617ec8a196cfd85c9f"
+    },
+    "shell-scripting": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/shell-scripting/SKILL.md",
+      "computedHash": "e7f9decc90838954eaa2b66cf8062bb0f9cbfbd13d38a392d0f7417deadeb4c6"
+    },
+    "sql-analyst": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/sql-analyst/SKILL.md",
+      "computedHash": "d527f57053fcdf5f7ed0744770afb037fb4f7b453578a173ff1cc91ce0fa3532"
+    },
+    "sqlite-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/sqlite-expert/SKILL.md",
+      "computedHash": "f63004999d019b0a150309ea1a20661ab3aa33267e48e26f0dfafa6f800cc122"
+    },
+    "sysadmin": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/sysadmin/SKILL.md",
+      "computedHash": "41c8b326f6acc0f977d83616326df130ca47171f78b35ac49f8aa0f9f06902ee"
+    },
+    "technical-writer": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/technical-writer/SKILL.md",
+      "computedHash": "f510a15e7f7f13ae0f76691f5105ff000f0e91b5f889161820068bf9b7e09884"
+    },
+    "typescript-expert": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/typescript-expert/SKILL.md",
+      "computedHash": "95fbe80c680bb69561691cdbfaff2d7613a74b8b8275069d17badbf54745ac58"
+    },
+    "web-search": {
+      "source": "RightNow-AI/openfang",
+      "sourceType": "github",
+      "skillPath": "crates/openfang-skills/bundled/web-search/SKILL.md",
+      "computedHash": "0e63002c5673cf361050040e2d91b1ed6628bef2fed3d3ad43f503a680cb3178"
+    }
+  }
+}
