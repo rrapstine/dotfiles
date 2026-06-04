@@ -1,70 +1,41 @@
 #!/bin/bash
-# =============================================================================
-# Script Name : tp (Tmux Project Launcher)
-# Description : Fuzzy-find a project and attach to or create a tmux session
-# Author      : rrapstine
-# License     : MIT
-# Version     : 1.0.0
-# =============================================================================
 
 CODE_DIR="$HOME/Code"
-SPECIAL_DIRS=("dotfiles" "scripts")  # Add more special dirs here as needed
 
-# Build exclusion arguments for find
-exclude_args=()
-for special in "${SPECIAL_DIRS[@]}"; do
-  if [ ${#exclude_args[@]} -gt 0 ]; then
-    exclude_args+=("-o")
-  fi
-  exclude_args+=("-path" "$CODE_DIR/$special/*")
+command -v fzf  >/dev/null 2>&1 || { echo "fzf is required but not installed."; exit 1; }
+command -v tmux >/dev/null 2>&1 || { echo "tmux is required but not installed."; exit 1; }
+[ -d "$CODE_DIR"         ] || { echo "$CODE_DIR does not exist.";         exit 1; }
+
+entries=()
+
+if [ -d "$CODE_DIR/projects" ]; then
+    for dir in "$CODE_DIR/projects"/*/; do
+        [ -d "$dir" ] && entries+=("projects/$(basename "$dir")")
+    done
+fi
+
+for special in dotfiles homelab; do
+    [ -d "$CODE_DIR/$special" ] && entries+=("$special")
 done
 
-# Find regular projects (2 levels deep), excluding special directories
-if [ ${#exclude_args[@]} -gt 0 ]; then
-  projects=($(find "$CODE_DIR" -mindepth 2 -maxdepth 2 -type d \( "${exclude_args[@]}" \) -prune -o -type d -print))
+[ ${#entries[@]} -eq 0 ] && { echo "No projects found."; exit 1; }
+
+selected=$(printf '%s\n' "${entries[@]}" | fzf --prompt="tp → " --exit-0)
+[ -z "$selected" ] && exit 0
+
+case "$selected" in
+    projects/*)
+        session_name="${selected#projects/}"
+        project_path="$CODE_DIR/$selected"
+        ;;
+    *)
+        session_name="$selected"
+        project_path="$CODE_DIR/$selected"
+        ;;
+esac
+
+if tmux has-session -t "$session_name" 2>/dev/null; then
+    tmux attach -t "$session_name"
 else
-  projects=($(find "$CODE_DIR" -mindepth 2 -maxdepth 2 -type d))
-fi
-
-# Add special directories if they exist
-for special in "${SPECIAL_DIRS[@]}"; do
-  special_path="$CODE_DIR/$special"
-  if [ -d "$special_path" ]; then
-    projects+=("$special_path")
-  fi
-done
-
-# Exit if no projects found
-if [ ${#projects[@]} -eq 0 ]; then
-  echo "No projects found."
-  exit 1
-fi
-
-# Gather just the directory names
-names=()
-for p in "${projects[@]}"; do
-  names+=("$(basename "$p")")
-done
-
-# Use fzf for fuzzy selection
-selected=$(printf '%s\n' "${names[@]}" | fzf)
-
-# Exit if nothing was selected
-if [ -z "$selected" ]; then
-  exit
-fi
-
-# Find the full path to the selected project
-for p in "${projects[@]}"; do
-  if [ "$(basename "$p")" = "$selected" ]; then
-    project_path="$p"
-    break
-  fi
-done
-
-# Attach to an existing tmux session, or create a new one
-if tmux has-session -t "$selected" 2>/dev/null; then
-  tmux attach -t "$selected"
-else
-  tmux new-session -s "$selected" -c "$project_path"
+    tmux new-session -s "$session_name" -c "$project_path"
 fi
