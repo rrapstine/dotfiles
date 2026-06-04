@@ -1,6 +1,6 @@
 ---
 description: senior engineer providing direct instruction with deep explanations
-model: zai-coding-plan/glm-5.1
+model: opencode-go/deepseek-v4-pro
 temperature: 0.1
 tools:
   write: false
