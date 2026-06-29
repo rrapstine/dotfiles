@@ -9,7 +9,7 @@ After=local-fs.target
 What=/dev/disk/by-uuid/e2e56c0a-cbb7-485e-852a-decc537b4d9a
 Where=/media/games/ssd
 Type=btrfs
-Options=noatime,nodiratime,nofail,ssd,space_cache=v2,commit=120,compress=zstd:3,subvol=/,user,x-systemd.automount,x-systemd.idle-timeout=300
+Options=noatime,nofail,ssd,discard=async,space_cache=v2,commit=120,compress=zstd:3,subvol=/,user,exec,x-systemd.automount,x-systemd.idle-timeout=300
 
 [Install]
 WantedBy=multi-user.target
