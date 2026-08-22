@@ -6,6 +6,8 @@ hl.monitor({
   mode = '3440x1440@143.97Hz',
   position = 'auto',
   scale = 1,
+  bitdepth = 10,
+  supports_hdr = 1,
 })
 
 hl.env('ELECTRON_OZONE_PLATFORM_HINT', 'auto')
