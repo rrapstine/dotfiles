@@ -2,7 +2,7 @@ clipboard-read = allow
 clipboard-write = allow
 copy-on-select = true
 
-theme = Catppuccin Mocha
+theme = noctalia
 window-theme = ghostty
 gtk-wide-tabs = false
 window-padding-x = 10

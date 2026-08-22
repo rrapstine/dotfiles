@@ -2,8 +2,8 @@
 -- https://wiki.hypr.land/Configuring/Basics/Monitors/
 
 hl.monitor({
-  output = 'HDMI-A-1',
-  mode = '3440x1440@99.98',
+  output = 'DP-1',
+  mode = '3440x1440@143.97Hz',
   position = 'auto',
   scale = 1,
 })

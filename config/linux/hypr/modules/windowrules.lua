@@ -10,6 +10,13 @@ hl.workspace_rule({ workspace = '4', gaps_out = 5, gaps_in = 3, persistent = tru
 hl.workspace_rule({ workspace = '5', gaps_out = 5, gaps_in = 3, persistent = true })
 hl.workspace_rule({ workspace = '6', gaps_out = 5, gaps_in = 3, persistent = true })
 
+--- VRR Opt-Out ---
+-- These apps flicker in fullscreen on this VRR monitor; games keep VRR.
+hl.window_rule({
+  match = { class = '^(brave.*|app\\.zen_browser\\.zen|org\\.mozilla\\.firefox|LibreWolf)$' },
+  no_vrr = true,
+})
+
 --- Workspace Assignments ---
 hl.window_rule({
   match = { class = 'brave-origin-beta' },

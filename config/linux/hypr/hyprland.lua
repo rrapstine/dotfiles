@@ -13,3 +13,6 @@ require('modules/windowrules')
 require('modules/autostart')
 require('modules/keybinds')
 
+
+-- For Noctalia Color templates
+require("noctalia").apply_theme()

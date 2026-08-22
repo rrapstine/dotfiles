@@ -5,8 +5,8 @@ local defaults = {
   mainMod = 'SUPER',
   terminal = 'ghostty',
   filemanager = 'nautilus',
-  browser = 'brave-origin-beta',
-  applauncher = 'walker',
+  browser = 'brave-origin',
+  applauncher = 'noctalia msg panel-open launcher',
   idlehandler = 'hypridle',
 }
 

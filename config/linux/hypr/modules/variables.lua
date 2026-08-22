@@ -61,7 +61,7 @@ hl.config({
 --- Render ---
 hl.config({
   render = {
-    direct_scanout = true,
+    direct_scanout = 0, -- int: 0 off / 1 on / 2 auto
   },
 })
 

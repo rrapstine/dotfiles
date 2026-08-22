@@ -7,18 +7,10 @@ hl.on('hyprland.start', function()
   -- Input methods
   hl.exec_cmd('fcitx5 -d &')
 
-  -- Status bar
-  hl.exec_cmd('wayle panel start &')
-
-  -- System tray
-  -- hl.exec_cmd("nm-applet --indicator &")
+  hl.exec_cmd('noctalia')
 
   -- Polkit
   hl.exec_cmd('systemctl --user start hyprpolkitagent &')
-
-  -- Launcher services
-  hl.exec_cmd('elephant &')
-  hl.exec_cmd('walker --gapplication-service &')
 
   -- Lock screen immediately on startup (works with greetd autologin)
   hl.exec_cmd('hyprlock &')
@@ -30,4 +22,10 @@ hl.on('hyprland.start', function()
 
   -- Idle handler
   hl.exec_cmd(defaults.idlehandler .. ' &')
+
+  -- Update tmux global environment with the current Hyprland signature
+  hl.exec_cmd('tmux setenv -g HYPRLAND_INSTANCE_SIGNATURE "' .. os.getenv('HYPRLAND_INSTANCE_SIGNATURE') .. '"')
+
+  -- Optional: Also update WAYLAND_DISPLAY if needed
+  hl.exec_cmd('tmux setenv -g WAYLAND_DISPLAY "' .. os.getenv('WAYLAND_DISPLAY') .. '"')
 end)

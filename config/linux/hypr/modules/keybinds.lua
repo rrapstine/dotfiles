@@ -8,26 +8,22 @@ hl.bind(mainMod .. ' + B', hl.dsp.exec_cmd(defaults.browser))
 hl.bind(mainMod .. ' + SPACE', hl.dsp.exec_cmd(defaults.applauncher))
 hl.bind(mainMod .. ' + SHIFT + RETURN', hl.dsp.exec_cmd(defaults.terminal .. ' --class=\'ghostty -float\''))
 
+--- System ---
+hl.bind(mainMod .. ' + L', hl.dsp.exec_cmd('noctalia msg session lock'))
+
+--- Launcher ---
+hl.bind(mainMod .. ' + Tab', hl.dsp.exec_cmd('noctalia msg window-switcher'))
+
 --- Window Operations ---
 hl.bind(mainMod .. ' + Q', hl.dsp.window.close())
-hl.bind(mainMod .. ' + SHIFT + M', hl.dsp.exec_cmd('loginctl terminate-user ""'))
 hl.bind(mainMod .. ' + V', hl.dsp.window.float({ action = 'toggle' }))
 hl.bind(mainMod .. ' + F', hl.dsp.window.fullscreen())
-hl.bind(mainMod .. ' + Y', hl.dsp.window.pin())
+hl.bind(mainMod .. ' + M', hl.dsp.window.fullscreen_state({ internal = 1, client = 0 }))
+hl.bind(mainMod .. ' + P', hl.dsp.window.pin())
 hl.bind(mainMod .. ' + J', hl.dsp.layout('togglesplit'))
 
 --- Groups ---
 hl.bind(mainMod .. ' + K', hl.dsp.group.toggle())
-
---- Launcher ---
-hl.bind(mainMod .. ' + Tab', hl.dsp.exec_cmd('walker -m windows'))
-
---- Gaps ---
-hl.bind(mainMod .. ' + SHIFT + G', hl.dsp.exec_cmd('hyprctl --batch "keyword general:gaps_out 5;keyword general:gaps_in 3"'))
-hl.bind(mainMod .. ' + G', hl.dsp.exec_cmd('hyprctl --batch "keyword general:gaps_out 0;keyword general:gaps_in 0"'))
-
---- System ---
-hl.bind(mainMod .. ' + L', hl.dsp.exec_cmd('hyprlock --grace 5'))
 
 --- Media Keys ---
 hl.bind('XF86AudioRaiseVolume', hl.dsp.exec_cmd('pactl set-sink-volume @DEFAULT_SINK@ +5%'), { repeating = true })
@@ -117,4 +113,3 @@ hl.config({
     window_direction_monitor_fallback = true,
   },
 })
-
